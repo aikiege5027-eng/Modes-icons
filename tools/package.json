@@ -1,0 +1,18 @@
+{
+  "name": "modes-icons-tools",
+  "private": true,
+  "type": "module",
+  "description": "把外部图库的图标改造成 KONE China icon 设计规范的一次性工具，不参与页面构建",
+  "scripts": {
+    "build": "node normalize-icon.mjs",
+    "check": "node check-page.mjs && node check-sizes.mjs",
+    "sheet": "node contact-sheet.mjs"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "2.6.2",
+    "jsdom": "24.1.3",
+    "pathkit-wasm": "1.0.0",
+    "svgpath": "2.6.0",
+    "tdesign-icons-svg": "0.4.7"
+  }
+}

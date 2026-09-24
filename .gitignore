@@ -1,0 +1,8 @@
+# 依赖：跑 `cd tools && npm i` 就能装回来，28M 不进仓库
+tools/node_modules/
+
+# 截图脚本的临时页面。脚本正常结束会自己 unlink，这里兜底防止中途中断留下残留
+.tmp-*.html
+
+# macOS
+.DS_Store

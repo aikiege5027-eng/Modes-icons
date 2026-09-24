@@ -1,0 +1,23 @@
+[
+  {"node":"1301:27373","lift":"扶梯","field":"运行状态","state":"运行中","iconName":"escalator","assetHint":"escalator","file":"1301_27373.svg"},
+  {"node":"1301:27350","lift":"扶梯","field":"运行状态","state":"未运行","iconName":"escalator","assetHint":"escalator","file":"1301_27350.svg"},
+  {"node":"1301:27347","lift":"扶梯","field":"运行方向","state":"上行","iconName":"arrow-up","assetHint":"arrow-up","file":"1301_27347.svg"},
+  {"node":"1301:27346","lift":"扶梯","field":"运行方向","state":"下行","iconName":"arrow-up","assetHint":"arrow-up","file":"1301_27346.svg"},
+  {"node":"1301:27360","lift":"扶梯","field":"运行方向","state":"左行","iconName":"arrow-up","assetHint":"arrow-up","file":"1301_27360.svg"},
+  {"node":"1301:27344","lift":"扶梯","field":"运行方向","state":"右行","iconName":"arrow-up","assetHint":"arrow-up","file":"1301_27344.svg"},
+  {"node":"1301:27357","lift":"扶梯","field":"运行方向","state":"停止运行","iconName":"stop","assetHint":"stop","file":"1301_27357.svg"},
+  {"node":"1301:27342","lift":"扶梯","field":"速度","state":"有数值","iconName":"elevator-filled","assetHint":"Large screen","file":"1301_27342.svg"},
+  {"node":"1301:27348","lift":"扶梯","field":"速度","state":"无数值","iconName":"elevator-filled","assetHint":"Large screen","file":"1301_27348.svg"},
+  {"node":"1301:27341","lift":"扶梯","field":"左扶手温度","state":"有数值","iconName":"click","assetHint":"click","file":"1301_27341.svg"},
+  {"node":"1301:27340","lift":"扶梯","field":"左扶手温度","state":"无数值","iconName":"click","assetHint":"click","file":"1301_27340.svg"},
+  {"node":"1301:27339","lift":"扶梯","field":"右扶手温度","state":"有数值","iconName":"elevator-filled","assetHint":"click","file":"1301_27339.svg"},
+  {"node":"1301:27338","lift":"扶梯","field":"右扶手温度","state":"无数值","iconName":"elevator-filled","assetHint":"click","file":"1301_27338.svg"},
+  {"node":"1301:27337","lift":"扶梯","field":"齿轮箱振动","state":"有数值","iconName":"elevator-filled","assetHint":"setting","file":"1301_27337.svg"},
+  {"node":"1301:27371","lift":"扶梯","field":"齿轮箱振动","state":"无数值","iconName":"elevator-filled","assetHint":"setting","file":"1301_27371.svg"},
+  {"node":"1301:27336","lift":"扶梯","field":"能耗","state":"有数值","iconName":"wind","assetHint":"wind","file":"1301_27336.svg"},
+  {"node":"1301:27335","lift":"扶梯","field":"能耗","state":"无数值","iconName":"wind","assetHint":"wind","file":"1301_27335.svg"},
+  {"node":"1301:27334","lift":"扶梯","field":"噪音","state":"有数值","iconName":"sound","assetHint":"sound","file":"1301_27334.svg"},
+  {"node":"1301:27333","lift":"扶梯","field":"噪音","state":"无数值","iconName":"sound","assetHint":"sound","file":"1301_27333.svg"},
+  {"node":"1301:27332","lift":"扶梯","field":"客流","state":"单位（人）","iconName":"elevator-filled","assetHint":"usergroup","file":"1301_27332.svg"},
+  {"node":"1301:27370","lift":"扶梯","field":"客流","state":"单位（万人）","iconName":"elevator-filled","assetHint":"usergroup","file":"1301_27370.svg"}
+]

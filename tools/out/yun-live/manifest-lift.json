@@ -1,0 +1,21 @@
+[
+  {"node":"1301:27383","lift":"直梯","field":"当前楼层","state":"上","iconName":"elevator-filled","assetHint":"layers","file":"1301_27383.svg"},
+  {"node":"1301:27364","lift":"直梯","field":"当前楼层","state":"下","iconName":"elevator-filled","assetHint":"layers","file":"1301_27364.svg"},
+  {"node":"1301:27361","lift":"直梯","field":"当前楼层","state":"停","iconName":"elevator-filled","assetHint":"layers","file":"1301_27361.svg"},
+  {"node":"1301:27376","lift":"直梯","field":"梯门状态","state":"已关闭","iconName":"elevator-filled","assetHint":"elevator-door","file":"1301_27376.svg"},
+  {"node":"1301:27382","lift":"直梯","field":"梯门状态","state":"关门中","iconName":"elevator-door-closing","assetHint":"elevator-door-closing","file":"1301_27382.svg"},
+  {"node":"1301:27380","lift":"直梯","field":"梯门状态","state":"已开门","iconName":"elevator-filled","assetHint":"elevator-door-open","file":"1301_27380.svg"},
+  {"node":"1301:27378","lift":"直梯","field":"梯门状态","state":"开门中","iconName":"elevator-filled","assetHint":"elevator-door-opening","file":"1301_27378.svg"},
+  {"node":"1301:27375","lift":"直梯","field":"门区状态","state":"在门区","iconName":"elevator-filled","assetHint":"elevator-door-opening","file":"1301_27375.svg"},
+  {"node":"1301:27354","lift":"直梯","field":"门区状态","state":"不在门区","iconName":"elevator-filled","assetHint":"elevator-door","file":"1301_27354.svg"},
+  {"node":"1301:27349","lift":"直梯","field":"实时载重","state":"正常","iconName":"elevator-filled","assetHint":"chart-1","file":"1301_27349.svg"},
+  {"node":"1301:27345","lift":"直梯","field":"实时载重","state":"已超载","iconName":"elevator-filled","assetHint":"chart-1","file":"1301_27345.svg"},
+  {"node":"1301:27363","lift":"直梯","field":"速度","state":"低速模式","iconName":"elevator-filled","assetHint":"dashboard-1","file":"1301_27363.svg"},
+  {"node":"1301:27351","lift":"直梯","field":"速度","state":"中速模式","iconName":"dashboard-1","assetHint":"dashboard-1","file":"1301_27351.svg"},
+  {"node":"1301:27353","lift":"直梯","field":"速度","state":"高速模式","iconName":"elevator-filled","assetHint":"dashboard-2","file":"1301_27353.svg"},
+  {"node":"1301:27352","lift":"直梯","field":"速度","state":"平层停靠","iconName":"dashboard-2","assetHint":"dashboard-2","file":"1301_27352.svg"},
+  {"node":"1301:27381","lift":"直梯","field":"上次外呼时间","state":"有时间值","iconName":"elevator-filled","assetHint":"call","file":"1301_27381.svg"},
+  {"node":"1301:27379","lift":"直梯","field":"上次外呼时间","state":"无时间值","iconName":"elevator-filled","assetHint":"call","file":"1301_27379.svg"},
+  {"node":"1301:27377","lift":"直梯","field":"上次内呼时间","state":"有时间值","iconName":"elevator-filled","assetHint":"user-talk","file":"1301_27377.svg"},
+  {"node":"1301:27374","lift":"直梯","field":"上次内呼时间","state":"无时间值","iconName":"elevator-filled","assetHint":"user-talk","file":"1301_27374.svg"}
+]

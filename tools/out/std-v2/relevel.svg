@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Relevel">
+<rect width="16" height="16" fill="white"/>
+<g id="Relevel_2">
+<path d="M7.64648 9.64648C7.84175 9.45122 8.15825 9.45122 8.35352 9.64648L10.3535 11.6465L9.64648 12.3535L8.5 11.207V15H7.5V11.207L6.35352 12.3535L5.64648 11.6465L7.64648 9.64648Z" fill="#141414"/>
+<path d="M14 8.5H2V7.5H14V8.5Z" fill="#141414"/>
+<path d="M8.5 4.79297L9.64648 3.64648L10.3535 4.35352L8.35352 6.35352C8.15825 6.54878 7.84175 6.54878 7.64648 6.35352L5.64648 4.35352L6.35352 3.64648L7.5 4.79297V1H8.5V4.79297Z" fill="#141414"/>
+</g>
+</g>
+</svg>

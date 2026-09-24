@@ -1,0 +1,8 @@
+[
+  {"name":"layers","node":"612:1006","file":"layers.svg","svgWidth":13,"svgHeight":13.0059,"viewBox":"0 0 13 13.0059","bytes":698},
+  {"name":"call","node":"612:906","file":"call.svg","svgWidth":11.2724,"svgHeight":10.9195,"viewBox":"0 0 11.2724 10.9195","bytes":2012},
+  {"name":"user-talk","node":"615:1752","file":"user-talk.svg","svgWidth":13.7,"svgHeight":13.5,"viewBox":"0 0 13.7 13.5","bytes":1350},
+  {"name":"arrow-up","node":"612:884","file":"arrow-up.svg","svgWidth":7.41421,"svgHeight":9,"viewBox":"0 0 7.41421 9","bytes":434},
+  {"name":"click","node":"612:927","file":"click.svg","svgWidth":10.3088,"svgHeight":14,"viewBox":"0 0 10.3088 14","bytes":1326},
+  {"name":"sound","node":"615:1726","file":"sound.svg","svgWidth":12,"svgHeight":11.5,"viewBox":"0 0 12 11.5","bytes":893}
+]

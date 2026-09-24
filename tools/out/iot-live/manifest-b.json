@@ -1,0 +1,20 @@
+[
+  {"node":"5532:18523","label":"温度","value":"23.5℃","iconName":"chart-1","assetHint":"thermometer","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"5532_18523.svg"},
+  {"node":"5532:18524","label":"湿度","value":"58.1%","iconName":"chart-1","assetHint":"Water droplets","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"5532_18524.svg"},
+  {"node":"5532:18525","label":"速度","value":"2m/s","iconName":"chart-1","assetHint":"dashboard-1","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"5532_18525.svg"},
+  {"node":"5532:18526","label":"平层感应上","value":"0","iconName":"chart-1","assetHint":"arrow-up-kone","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"5532_18526.svg"},
+  {"node":"5532:18527","label":"平层感应下","value":"1","iconName":"chart-1","assetHint":"arrow-down-kone","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"5532_18527.svg"},
+  {"node":"10602:48771","label":"左扶手带温度","value":"23.5℃","iconName":"chart-1","assetHint":"左扶手带温度","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"10602_48771.svg"},
+  {"node":"10602:48772","label":"右扶手带温度","value":"23.5℃","iconName":"chart-1","assetHint":"右扶手带温度","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"10602_48772.svg"},
+  {"node":"10602:48773","label":"齿轮箱振动","value":"0.0mg","iconName":"chart-1","assetHint":"齿轮箱振动","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"10602_48773.svg"},
+  {"node":"10602:48774","label":"齿轮箱振动（均值）","value":"0.0mg","iconName":"chart-1","assetHint":"齿轮箱振动","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"10602_48774.svg"},
+  {"node":"10602:48775","label":"能耗","value":"23kwh","iconName":"chart-1","assetHint":"wifi- filled/wind","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"10602_48775.svg"},
+  {"node":"10602:48776","label":"噪音","value":"0.2dB","iconName":"chart-1","assetHint":"sound","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"10602_48776.svg"},
+  {"node":"10602:48777","label":"客流","value":"000人","iconName":"chart-1","assetHint":"usergroup","iconBg":"#e3e3ff","iconFill":"#3C3BC6","tf":null,"file":"10602_48777.svg"},
+  {"node":"10602:48779","label":"运行状态","value":"运行中","iconName":"chart-1","assetHint":"escalator","iconBg":"#e7edfe","iconFill":"#1450F5","tf":null,"file":"10602_48779.svg"},
+  {"node":"10602:48780","label":"运行状态","value":"未运行","iconName":"chart-1","assetHint":"escalator1","iconBg":"#e7edfe","iconFill":"#1450F5","tf":null,"file":"10602_48780.svg"},
+  {"node":"10602:48781","label":"运行方向","value":"上行","iconName":"chart-1","assetHint":"arrow-up","iconBg":"#e7edfe","iconFill":"#1450F5","tf":null,"file":"10602_48781.svg"},
+  {"node":"10602:48782","label":"运行方向","value":"下行","iconName":"chart-1","assetHint":"arrow-down","iconBg":"#e7edfe","iconFill":"#1450F5","tf":null,"file":"10602_48782.svg"},
+  {"node":"10602:48783","label":"运行方向","value":"停止","iconName":"chart-1","assetHint":"stop","iconBg":"#e7edfe","iconFill":"#1450F5","tf":null,"file":"10602_48783.svg"},
+  {"node":"10602:48784","label":"运行速度","value":"2m/s","iconName":"chart-1","assetHint":"dashboard-1","iconBg":"#e7edfe","iconFill":"#1450F5","tf":null,"file":"10602_48784.svg"}
+]

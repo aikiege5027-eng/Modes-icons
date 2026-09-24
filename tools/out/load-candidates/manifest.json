@@ -1,0 +1,182 @@
+[
+  {
+    "name": "load speed",
+    "node": "5156:31",
+    "file": "load_speed.svg",
+    "svgWidth": 11.5117,
+    "svgHeight": 12,
+    "viewBox": "0 0 11.5117 12",
+    "bytes": 1200
+  },
+  {
+    "name": "elevator-passenger",
+    "node": "612:974",
+    "file": "elevator-passenger.svg",
+    "svgWidth": 12,
+    "svgHeight": 12,
+    "viewBox": "0 0 12 12",
+    "bytes": 968
+  },
+  {
+    "name": "elevator-cargo",
+    "node": "7300:92",
+    "file": "elevator-cargo.svg",
+    "svgWidth": 12,
+    "svgHeight": 12,
+    "viewBox": "0 0 12 12",
+    "bytes": 1279
+  },
+  {
+    "name": "elevator-box",
+    "node": "7300:96",
+    "file": "elevator-box.svg",
+    "svgWidth": 12,
+    "svgHeight": 12,
+    "viewBox": "0 0 12 12",
+    "bytes": 1619
+  },
+  {
+    "name": "measure",
+    "node": "5156:28",
+    "file": "measure.svg",
+    "svgWidth": 14,
+    "svgHeight": 11.0762,
+    "viewBox": "0 0 14 11.0762",
+    "bytes": 1244
+  },
+  {
+    "name": "box",
+    "node": "612:909",
+    "file": "box.svg",
+    "svgWidth": 11,
+    "svgHeight": 12,
+    "viewBox": "0 0 11 12",
+    "bytes": 1038
+  },
+  {
+    "name": "truck",
+    "node": "6542:26",
+    "file": "truck.svg",
+    "svgWidth": 14,
+    "svgHeight": 10.4717,
+    "viewBox": "0 0 14 10.4717",
+    "bytes": 1690
+  },
+  {
+    "name": "toolbox",
+    "node": "615:1743",
+    "file": "toolbox.svg",
+    "svgWidth": 13.9875,
+    "svgHeight": 11,
+    "viewBox": "0 0 13.9875 11",
+    "bytes": 840
+  },
+  {
+    "name": "Medicine box",
+    "node": "615:1770",
+    "file": "Medicine_box.svg",
+    "svgWidth": 12,
+    "svgHeight": 11.6667,
+    "viewBox": "0 0 12 11.6667",
+    "bytes": 609
+  },
+  {
+    "name": "equipment",
+    "node": "612:972",
+    "file": "equipment.svg",
+    "svgWidth": 12,
+    "svgHeight": 12,
+    "viewBox": "0 0 12 12",
+    "bytes": 869
+  },
+  {
+    "name": "usergroup",
+    "node": "615:1753",
+    "file": "usergroup.svg",
+    "svgWidth": 14.5,
+    "svgHeight": 13.4006,
+    "viewBox": "0 0 14.5 13.4006",
+    "bytes": 1382
+  },
+  {
+    "name": "chart-1",
+    "node": "612:901",
+    "file": "chart-1.svg",
+    "svgWidth": 12,
+    "svgHeight": 12,
+    "viewBox": "0 0 12 12",
+    "bytes": 727
+  },
+  {
+    "name": "chart-2",
+    "node": "612:899",
+    "file": "chart-2.svg",
+    "svgWidth": 12,
+    "svgHeight": 12,
+    "viewBox": "0 0 12 12",
+    "bytes": 577
+  },
+  {
+    "name": "dashboard-1",
+    "node": "612:930",
+    "file": "dashboard-1.svg",
+    "svgWidth": 15,
+    "svgHeight": 11.786,
+    "viewBox": "0 0 15 11.786",
+    "bytes": 1174
+  },
+  {
+    "name": "dashboard-2",
+    "node": "612:929",
+    "file": "dashboard-2.svg",
+    "svgWidth": 15,
+    "svgHeight": 11.786,
+    "viewBox": "0 0 15 11.786",
+    "bytes": 1174
+  },
+  {
+    "name": "dashboard0",
+    "node": "3996:5497",
+    "file": "dashboard0.svg",
+    "svgWidth": 15,
+    "svgHeight": 11.786,
+    "viewBox": "0 0 15 11.786",
+    "bytes": 1273
+  },
+  {
+    "name": "dashboard-3",
+    "node": "3996:5501",
+    "file": "dashboard-3.svg",
+    "svgWidth": 15,
+    "svgHeight": 11.7744,
+    "viewBox": "0 0 15 11.7744",
+    "bytes": 1112
+  },
+  {
+    "name": "thermometer",
+    "node": "4324:3098",
+    "file": "thermometer.svg",
+    "svgWidth": 8.4,
+    "svgHeight": 14.8775,
+    "viewBox": "0 0 8.4 14.8775",
+    "bytes": 1249
+  },
+  {
+    "name": "digit",
+    "node": "3262:687",
+    "file": "digit.svg",
+    "svgWidth": 12,
+    "svgHeight": 12,
+    "viewBox": "0 0 12 12",
+    "bytes": 563
+  },
+  {
+    "name": "shopping_cart_full",
+    "node": "615:1720",
+    "file": "shopping_cart_full.svg",
+    "svgWidth": 12.2521,
+    "svgHeight": 13.4642,
+    "viewBox": "0 0 12.2521 13.4642",
+    "bytes": 1296
+  }
+]

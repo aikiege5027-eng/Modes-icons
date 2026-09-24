@@ -1,0 +1,53 @@
+[
+  {
+    "cell": "8460:8473",
+    "label": "横向振动",
+    "value": "12mg",
+    "iconLayerName": "横向振动",
+    "iconNodeId": "I8460:8473;5532:18075",
+    "file": "8460_8473.svg",
+    "viewBox": "0 0 17.4878 12.4756",
+    "svgWidth": 17.4878,
+    "svgHeight": 12.4756,
+    "iconFrame": "20x20 (offset x 1.2561, y 3.7622)",
+    "fill": "#3C3BC6",
+    "shape": "横放的双扇门：矩形外框被一条竖线一分为二，门框外左右各有一条短竖线，表示左右（横向）方向",
+    "bytes": 707,
+    "sha1": "833bb32b8196d1af927212fe591c87f8f3c4793f",
+    "cellPng": "8460_8473_cell@4x.png"
+  },
+  {
+    "cell": "8460:8474",
+    "label": "纵向振动",
+    "value": "8mg",
+    "iconLayerName": "纵向振动",
+    "iconNodeId": "I8460:8474;5532:18075",
+    "file": "8460_8474.svg",
+    "viewBox": "0 0 17.4878 12.4756",
+    "svgWidth": 17.4878,
+    "svgHeight": 12.4756,
+    "iconFrame": "20x20 (offset x 1.2561, y 3.7622)",
+    "fill": "#3C3BC6",
+    "shape": "横放的单扇门：矩形外框中间没有竖线分隔，门框外左右各有一条短竖线；与横向振动的唯一区别是少了中缝",
+    "bytes": 664,
+    "sha1": "5efedb1081fe496c421ab30d82de5c1e655efe81",
+    "cellPng": "8460_8474_cell@4x.png"
+  },
+  {
+    "cell": "8460:8475",
+    "label": "垂直振动",
+    "value": "4mg",
+    "iconLayerName": "垂直振动",
+    "iconNodeId": "I8460:8475;5532:18075",
+    "file": "8460_8475.svg",
+    "viewBox": "0 0 15 17.4756",
+    "svgWidth": 15,
+    "svgHeight": 17.4756,
+    "iconFrame": "20x20 (offset x 2.5, y 1.2622)",
+    "fill": "#3C3BC6",
+    "shape": "竖放的双扇门：竖长矩形外框被一条竖线一分为二，门框上下各有一条短横线，表示上下（垂直）方向",
+    "bytes": 672,
+    "sha1": "0997adad3d0057556f16ca88e034b9e72d8cee3c",
+    "cellPng": "8460_8475_cell@4x.png"
+  }
+]
