@@ -3862,8 +3862,8 @@ return {
     + '可能要跨越大半个层高。',
 
   /* ---- 原先「未填充的 5 行」----
-     其中 Evacuation for KCEGC 已沿用 logout、DOP CS 已按要求填 card，
-     现在还空着的是 RES E / H4 / PRL H*(后缀见下) 三行。
+     其中 Evacuation for KCEGC 已沿用 logout、DOP CS 已按要求填 card、
+     PRL H*(后缀见下) 已按要求填 user-talk，现在还空着的是 RES E / H4 两行。
      注释照旧保留五条 —— 填了图标不等于语义已确认，这几条的【存疑】标记还在。 */
 
   'DOP CS':
@@ -4375,7 +4375,7 @@ function stdCell(icon) {
    区别只有两点：按钮上挂的是 data-row（行标识）而不是 data-key（图标键），
    因为这张表的一行未必有图标；列宽也按 #panel-modes 单独收窄成 96px。
 
-   未填充的 3 行给占位符，不给禁用按钮 —— 禁用按钮会让人以为「这里本该能下载、
+   未填充的 2 行给占位符，不给禁用按钮 —— 禁用按钮会让人以为「这里本该能下载、
    是坏了」，而实际情况是这一行还没定图标，没有可导出的东西。 */
 function stdDownloadCell(r) {
   if (!r.std) return '<span class="cell-blank"></span>';
@@ -4842,7 +4842,7 @@ function render(keyword) {
           + disputeDot(r)
           + (r.std ? stdCell(r.std) : emptySlot())
         + '</td>'
-        /* 下载。只有填了标准版图标的行才有按钮 —— 未填充的 3 行没有可导出的东西，
+        /* 下载。只有填了标准版图标的行才有按钮 —— 未填充的 2 行没有可导出的东西，
            给个占位符而不是禁用按钮：禁用按钮会让人以为「这里本该能下载」。 */
         + '<td class="cell-download">' + stdDownloadCell(r) + '</td>'
         + '</tr>';
