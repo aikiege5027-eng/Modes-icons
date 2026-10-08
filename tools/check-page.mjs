@@ -87,7 +87,7 @@ console.log('\n筛选选项');
 for (const it of items) console.log('  ' + labelOf(it).padEnd(10) + countOf(it));
 
 const labels = items.map(labelOf);
-const WANT_FILTERS = ['全部', '已填充', '未填充', '争议项'];
+const WANT_FILTERS = ['全部', '已填充', '未填充', '新增/待确认'];
 for (const want of WANT_FILTERS) {
   ok(labels.includes(want), `筛选菜单缺少选项「${want}」`);
 }
@@ -109,7 +109,7 @@ function selectFilter(label) {
 }
 
 console.log('\n筛选结果核对');
-for (const [label, expect] of [['全部', 84], ['已填充', 82], ['未填充', 2], ['争议项', 14]]) {
+for (const [label, expect] of [['全部', 84], ['已填充', 82], ['未填充', 2], ['新增/待确认', 14]]) {
   const got = selectFilter(label);
   const n = got.filter((tr) => !tr.classList.contains('empty-row')).length;
   console.log(`  ${label.padEnd(8)} ${String(n).padStart(3)} 行  (期望 ${expect})`);
@@ -244,16 +244,20 @@ if (fail.length) {
 console.log('\n争议标记');
 
 /* 按 data 属性遍历取，不用选择器 —— 行标识里有 * / ( ) 这些字符，
-   放进属性选择器要转义，而 jsdom 没有 window.CSS.escape。 */
-const dotOf = (rowKey) => [...document.querySelectorAll('.dispute-dot')]
+   放进属性选择器要转义，而 jsdom 没有 window.CSS.escape。
+   ⚠️ 这一段所有的 .dispute-dot 查询都要带 #tbody 作用域：
+   「其他实时数据图标」表的标准版列现在也有自己的争议标记
+   （data-dispute-live，另一份 localStorage），不限定的话两张表的点会混在
+   一起数，按钮总数会变成 84 + 44。 */
+const dotOf = (rowKey) => [...document.querySelectorAll('#tbody .dispute-dot')]
   .find((el) => el.getAttribute('data-dispute-row') === rowKey);
-const litDots = () => [...document.querySelectorAll('.dispute-dot[aria-pressed="true"]')];
+const litDots = () => [...document.querySelectorAll('#tbody .dispute-dot[aria-pressed="true"]')];
 const click = (el) => el.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
 const disputedCount = () => {
   document.getElementById('stdFilterBtn')
     .dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
   const it = [...document.querySelectorAll('#stdFilterMenu .th-filter__item')]
-    .find((x) => labelOf(x) === '争议项');
+    .find((x) => labelOf(x) === '新增/待确认');
   const n = Number(it.querySelector('.th-filter__count').textContent.trim());
   document.getElementById('stdFilterBtn')
     .dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
@@ -261,7 +265,7 @@ const disputedCount = () => {
 };
 
 // 每一行都该有按钮，含未填充的 2 行
-const allDots = [...document.querySelectorAll('.dispute-dot')];
+const allDots = [...document.querySelectorAll('#tbody .dispute-dot')];
 console.log('  按钮总数              ', allDots.length);
 ok(allDots.length === 84, `每行都该有一个争议标记按钮，期望 84，实际 ${allDots.length}`);
 /* 取一个仍然空着的行。原来这里取的是 DOP CS，它已按指定填了 card，
@@ -275,8 +279,8 @@ ok(!!emptyRowDot, '未填充的行（RES E）也应该有争议标记按钮');
    全都是自动判定，没有 --manual。 */
 console.log('  默认点亮              ', litDots().length, '（筛选计数', disputedCount(), '）');
 ok(litDots().length === 14, `默认应有 14 个点亮，实际 ${litDots().length}`);
-ok(disputedCount() === 14, '默认「争议项」筛选计数应为 14');
-ok(!document.querySelector('.dispute-dot--manual'), '默认不应有手动标注');
+ok(disputedCount() === 14, '默认「新增/待确认」筛选计数应为 14');
+ok(!document.querySelector('#tbody .dispute-dot--manual'), '默认不应有手动标注');
 
 // A 点亮一个原本没标记的行
 click(dotOf('Normal Service'));
@@ -307,15 +311,15 @@ console.log('  切回后覆盖            ', JSON.stringify(stored), '计数', d
 ok(!('Normal Service' in stored), '切回自动值后应删除覆盖，而不是存一条同值记录');
 ok(disputedCount() === 13, `此时计数应为 13，实际 ${disputedCount()}`);
 
-// D 在「争议项」筛选下熄灭一行，该行应从结果里消失
-let got = selectFilter('争议项');
+// D 在「新增/待确认」筛选下熄灭一行，该行应从结果里消失
+let got = selectFilter('新增/待确认');
 const before = got.filter((tr) => !tr.classList.contains('empty-row')).length;
 click(dotOf('Pendant'));
 got = [...document.querySelectorAll('#tbody tr')];
 const after = got.filter((tr) => !tr.classList.contains('empty-row')).length;
-console.log('  争议项筛选下熄灭一行  ', before, '→', after);
-ok(after === before - 1, `在争议项筛选下熄灭一行应少一行，实际 ${before} → ${after}`);
-ok(!dotOf('Pendant'), '熄灭的行应已从争议项筛选结果中移除');
+console.log('  新增/待确认筛选下熄灭一行  ', before, '→', after);
+ok(after === before - 1, `在新增/待确认筛选下熄灭一行应少一行，实际 ${before} → ${after}`);
+ok(!dotOf('Pendant'), '熄灭的行应已从新增/待确认筛选结果中移除');
 
 // E 全部清除
 selectFilter('全部');
@@ -327,7 +331,7 @@ ok(!!resetBtn, '有手动标记时菜单底部应出现清除入口');
 click(resetBtn);
 console.log('  清除后点亮            ', litDots().length, '（筛选计数', disputedCount(), '）');
 ok(litDots().length === 14, `清除后应回到 14 个点亮，实际 ${litDots().length}`);
-ok(!document.querySelector('.dispute-dot--manual'), '清除后不应残留手动标注');
+ok(!document.querySelector('#tbody .dispute-dot--manual'), '清除后不应残留手动标注');
 
 document.getElementById('stdFilterBtn')
   .dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
@@ -347,11 +351,11 @@ document.getElementById('stdFilterBtn')
   const noStore = new JSDOM(html, { runScripts: 'dangerously', virtualConsole: v2, pretendToBeVisual: true });
   const doc2 = noStore.window.document;
   const rows2 = doc2.querySelectorAll('#tbody tr').length;
-  const dots2 = doc2.querySelectorAll('.dispute-dot').length;
-  const first = [...doc2.querySelectorAll('.dispute-dot')]
+  const dots2 = doc2.querySelectorAll('#tbody .dispute-dot').length;
+  const first = [...doc2.querySelectorAll('#tbody .dispute-dot')]
     .find((el) => el.getAttribute('data-dispute-row') === 'Normal Service');
   first.dispatchEvent(new noStore.window.MouseEvent('click', { bubbles: true }));
-  const litAfter = doc2.querySelectorAll('.dispute-dot[aria-pressed="true"]').length;
+  const litAfter = doc2.querySelectorAll('#tbody .dispute-dot[aria-pressed="true"]').length;
   console.log(`  无 localStorage 环境   渲染 ${rows2} 行 / ${dots2} 个按钮，点击后点亮 ${litAfter}，报错 ${errs.length}`);
   ok(errs.length === 0, `无 localStorage 时不应报错：${errs.join('; ')}`);
   ok(rows2 === 84 && dots2 === 84, '无 localStorage 时表格仍应正常渲染');
@@ -645,7 +649,7 @@ console.log('  首行单元格数          ', firstRowCells);
 okN(firstRowCells === 14, `每行应有 14 个单元格，实际 ${firstRowCells}`);
 
 // 空状态那一行的 colspan 要跟着列数走
-selectFilter('争议项');
+selectFilter('新增/待确认');
 document.getElementById('searchInput').value = '不存在的关键词zzz';
 document.getElementById('searchInput').dispatchEvent(new dom.window.Event('input', { bubbles: true }));
 const emptyRowCell = document.querySelector('#tbody .empty-row td');
@@ -1022,6 +1026,135 @@ console.log('\n搜索范围');
   console.log(`  注释内容              → ${noteHits.length} 行（应为 0，本地草稿不参与搜索）`);
   okS(noteHits.length === 0, '注释内容不该被搜索命中');
 
+  /* ---- 另外两个页签的搜索 ----
+     搜索框三个页签共用，输入时由 renderActiveTab() 分派给当前页签那张表。
+     这里逐个页签验证：能命中、能筛空、关键词跨页签保留，以及
+     ——最容易出事的一项—— 实时数据表的 rowspan 在筛选后仍然自洽。 */
+  const clickTab = (id) => doc.getElementById(id).click();
+  const bodyRows = (id) => [...doc.querySelectorAll(`#${id} tr`)]
+    .filter((tr) => !tr.classList.contains('empty-row'));
+  const emptyCell = (id) => doc.querySelector(`#${id} tr.empty-row td`);
+  /* 按 rowspan / colspan 把单元格铺进网格：每行必须恰好填满 cols 列、互不重叠。
+     筛选后 rowspan 若还按全表算，跨度会超出实际渲染的行数，这里会立刻报出来。 */
+  const gridOk = (id, cols, label) => {
+    const trs = [...doc.querySelectorAll(`#${id} tr`)];
+    const grid = trs.map(() => new Array(cols).fill(0));
+    trs.forEach((tr, ri) => {
+      let ci = 0;
+      for (const cell of tr.children) {
+        while (ci < cols && grid[ri][ci]) ci++;
+        const rs = Number(cell.getAttribute('rowspan') || 1);
+        const cs = Number(cell.getAttribute('colspan') || 1);
+        for (let r = 0; r < rs; r++) {
+          for (let c = 0; c < cs; c++) {
+            if (ri + r >= trs.length || ci + c >= cols) { okS(false, `${label} 单元格越界（第 ${ri} 行）`); return; }
+            if (grid[ri + r][ci + c]) { okS(false, `${label} 单元格重叠（第 ${ri} 行）`); return; }
+            grid[ri + r][ci + c] = 1;
+          }
+        }
+        ci += cs;
+      }
+    });
+    const hole = grid.findIndex((row) => row.some((v) => !v));
+    okS(hole === -1, `${label} 第 ${hole} 行没填满 ${cols} 列`);
+  };
+
+  clickTab('tab-function');
+  input.value = '';
+  input.dispatchEvent(new d3.window.Event('input', { bubbles: true }));
+  const fnTotal = bodyRows('tbodyFunction').length;
+  console.log(`  梯形页签 全量          ${fnTotal} 行 · 页签计数 ${doc.getElementById('tabCountFunction').textContent}`);
+  okS(fnTotal > 0, '梯形 / 功能图标表应渲染出行');
+  // 页签计数是「这一类共收多少条」，不跟搜索走
+  okS(doc.getElementById('tabCountFunction').textContent === String(fnTotal), '梯形页签计数应等于全量行数');
+
+  const fnSearch = (kw) => {
+    input.value = kw;
+    input.dispatchEvent(new d3.window.Event('input', { bubbles: true }));
+    return bodyRows('tbodyFunction');
+  };
+  for (const [label, kw] of [['梯型', '扶梯'], ['中文名', '步道'], ['英文名', 'escalator']]) {
+    const hits = fnSearch(kw);
+    console.log(`  梯形页签 ${label.padEnd(12)} "${kw}" → ${hits.length} 行`);
+    okS(hits.length > 0, `梯形页签搜「${kw}」应能命中（${label}）`);
+  }
+  // 命中的每一行都要真的含这个词（梯型列被合并隐藏的行靠中英文名命中）
+  okS(fnSearch('escalator').every((tr) => tr.textContent.toLowerCase().includes('escalator')),
+    '梯形页签的结果里出现了不含关键词的行');
+  gridOk('tbodyFunction', 5, '梯形页签表格');
+  for (const kw of ['svg', 'PNG']) {
+    const hits = fnSearch(kw);
+    const cell = emptyCell('tbodyFunction');
+    console.log(`  梯形页签 下载按钮文字    "${kw}" → ${hits.length} 行 · 空状态 colspan=${cell?.getAttribute('colspan')}`);
+    okS(hits.length === 0, `下载按钮文字「${kw}」不该进搜索范围`);
+    okS(cell?.getAttribute('colspan') === '5', '梯形页签空状态 colspan 应为 5（该表 5 列）');
+  }
+  okS(fnSearch('').length === fnTotal, '清空关键词后梯形页签应恢复全量');
+
+  clickTab('tab-live');
+  const lvTotal = bodyRows('tbodyLive').length;
+  console.log(`  实时页签 全量          ${lvTotal} 行 · 页签计数 ${doc.getElementById('tabCountLive').textContent}`);
+  okS(lvTotal > 0, '其他实时数据图标表应渲染出行');
+  okS(doc.getElementById('tabCountLive').textContent === String(lvTotal), '实时页签计数应等于全量行数');
+  gridOk('tbodyLive', 9, '实时页签表格（未筛选）');
+
+  const lvSearch = (kw) => {
+    input.value = kw;
+    input.dispatchEvent(new d3.window.Event('input', { bubbles: true }));
+    return bodyRows('tbodyLive');
+  };
+  const LIVE_CASES = [
+    ['实时数据名称', '梯门状态'],
+    ['细分状态', '已关闭'],
+    ['LiveView 字段名', 'door status'],   // 小写，验大小写无关
+    /* 平台取值文字：实时载重那行云视界的卡片上写的是「60%」（细分是「不分状态」，
+       所以格子里显示的只能是这个取值）。⚠️ 别拿「超载」来测 —— 两家的正常 / 已超载
+       是同一张图、本表没拆行，那个词只活在 note / tooltip 里，表面看不见。 */
+    ['平台取值文字', '60%'],
+    ['标准版 icon 名', 'elevator-door-open'],
+    ['梯型', '扶梯'],
+  ];
+  for (const [label, kw] of LIVE_CASES) {
+    const hits = lvSearch(kw);
+    console.log(`  实时页签 ${label.padEnd(12)} "${kw}" → ${hits.length} 行`);
+    okS(hits.length > 0, `实时页签搜「${kw}」应能命中（${label}）`);
+    gridOk('tbodyLive', 9, `实时页签表格（筛「${kw}」）`);
+  }
+  /* 命中单行时细分状态仍要显示 —— fieldRows 按全表数而不是按筛选结果数的那条规则，
+     搞错的话搜到的词恰好会从表上消失。 */
+  okS(lvSearch('已关闭')[0]?.textContent.includes('已关闭'), '命中单行时细分状态不该被留空');
+  for (const kw of ['svg', 'png']) {
+    const hits = lvSearch(kw);
+    const cell = emptyCell('tbodyLive');
+    console.log(`  实时页签 下载按钮文字    "${kw}" → ${hits.length} 行 · 空状态 colspan=${cell?.getAttribute('colspan')}`);
+    okS(hits.length === 0, `下载按钮文字「${kw}」不该进搜索范围`);
+    okS(cell?.getAttribute('colspan') === '9', '实时页签空状态 colspan 应为 9（该表 9 列）');
+  }
+  // 只活在 tooltip 里的东西不进范围：本表记号「不分状态」、Figma 节点号
+  for (const [label, kw] of [['本表记号', '不分状态'], ['Figma 节点号', '1301:27383']]) {
+    const hits = lvSearch(kw);
+    console.log(`  实时页签 ${label.padEnd(12)} "${kw}" → ${hits.length} 行（应为 0，表面看不见）`);
+    okS(hits.length === 0, `「${kw}」不该进搜索范围（${label}）`);
+  }
+
+  // 关键词跨页签保留，且切过去立刻按它重渲染
+  lvSearch('扶梯');
+  clickTab('tab-function');
+  const keptFn = bodyRows('tbodyFunction').length;
+  clickTab('tab-live');
+  const keptLv = bodyRows('tbodyLive').length;
+  console.log(`  跨页签保留关键词        「扶梯」→ 梯形 ${keptFn} 行 / 实时 ${keptLv} 行 · 输入框 ${JSON.stringify(input.value)}`);
+  okS(input.value === '扶梯', '切页签不该清空关键词');
+  okS(!input.disabled, '三个页签的搜索框都应可用');
+  okS(keptFn > 0 && keptLv > 0, '切页签后应按当前关键词重渲染目标表');
+
+  // 切回模式页签，原有搜索行为不受影响
+  clickTab('tab-modes');
+  const modesTotal = rows.length;   // 顶部那次渲染的行数（见文件开头的「渲染行数」）
+  console.log(`  模式页签 回归           "驻停" → ${search('驻停').length} 行 · 清空 → ${search('').length} 行`);
+  okS(search('驻停').length === 1, '模式页签搜索不应受影响');
+  okS(search('').length === modesTotal, `清空后模式页签应恢复 ${modesTotal} 行`);
+
   okS(errs.length === 0, `搜索过程中不应报错：${errs.join('; ')}`);
 
   if (searchFail.length) {
@@ -1033,4 +1166,324 @@ console.log('\n搜索范围');
   }
 
   d3.window.close();
+}
+
+/* ============================================================
+   标准版图标的放大预览
+   三张表的标准版图标（.lift-icon）悬停时浮出 160×160 的方形预览。
+   卡住四件容易回退的事：
+     1. 三个页签都能触发，且预览内容是**格子里那张图的克隆**（不是回查字典，
+        也不是另渲染一份）
+     2. 图标内部移动（svg → path）不闪，换图标能换内容，离开能收
+     3. 锚点失效的场合都收掉：重渲染（搜索）、切页签、注释弹窗打开
+     4. 只有标准版图标触发 —— 平台列那些图标（.iot-mode / .yun-mode / AMC 的 img）
+        不在范围内
+   以及两条 CSS 读数：浮层必须正方形、画框必须是 16 的整数倍
+   （非整数倍放大会把 1 单位的笔画抹出半像素灰边，正是预览要解决的问题）。
+
+   同样要新开 JSDOM：上面两段都把各自的窗口关掉了。
+   ============================================================ */
+console.log('\n标准版图标放大预览');
+
+{
+  const v4 = new VirtualConsole();
+  const errs = [];
+  v4.on('jsdomError', (e) => errs.push(e.message));
+  const d4 = new JSDOM(html, {
+    runScripts: 'dangerously', virtualConsole: v4, pretendToBeVisual: true, url: 'http://localhost/',
+  });
+  const doc = d4.window.document;
+  const pvFail = [];
+  const okP = (cond, msg) => { if (!cond) pvFail.push(msg); };
+
+  const over = (el, related) => el.dispatchEvent(
+    new d4.window.MouseEvent('mouseover', { bubbles: true, relatedTarget: related || null }));
+  const out = (el, related) => el.dispatchEvent(
+    new d4.window.MouseEvent('mouseout', { bubbles: true, relatedTarget: related || null }));
+  const preview = doc.getElementById('iconPreview');
+  const stage = doc.getElementById('iconPreviewStage');
+  const input = doc.getElementById('searchInput');
+  const type = (v) => { input.value = v; input.dispatchEvent(new d4.window.Event('input', { bubbles: true })); };
+
+  okP(!!preview && !!stage, '预览浮层节点应存在');
+  okP(preview.hidden, '初始应隐藏');
+  okP(preview.getAttribute('aria-hidden') === 'true', '纯视觉放大，应标 aria-hidden');
+
+  for (const [label, tab, tbody] of [
+    ['模式图标', 'tab-modes', 'tbody'],
+    ['梯形 / 功能图标', 'tab-function', 'tbodyFunction'],
+    ['其他实时数据图标', 'tab-live', 'tbodyLive'],
+  ]) {
+    doc.getElementById(tab).click();
+    const icons = [...doc.querySelectorAll(`#${tbody} .lift-icon`)];
+    okP(icons.length > 0, `${label} 应有标准版图标`);
+    const el = icons[0];
+    const src = el.querySelector('svg');
+    over(el);
+    const big = stage.querySelector('svg');
+    console.log(`  ${label.padEnd(16)} ${icons.length} 个 · hover 后 ${preview.hidden ? '未显示' : '已显示'}`
+      + ` · viewBox=${big?.getAttribute('viewBox')} path×${big?.querySelectorAll('path').length}`);
+    okP(!preview.hidden, `${label}：hover 应显示预览`);
+    okP(!!big, `${label}：预览里应有 svg`);
+    okP(big?.getAttribute('viewBox') === src.getAttribute('viewBox'), `${label}：viewBox 应与格子里一致`);
+    okP(big?.innerHTML === src.innerHTML, `${label}：预览应是格子里那张图的克隆`);
+    // 带固定宽高的话 CSS 的 128px 画框会失效，预览被锁成 20px
+    okP(!big?.hasAttribute('width') && !big?.hasAttribute('height'), `${label}：克隆后不该带固定宽高`);
+
+    // svg → path 的内部移动不算离开（否则预览会在鼠标移动时反复闪）
+    const inner = el.querySelector('path') || src;
+    out(src, inner);
+    okP(!preview.hidden, `${label}：图标内部移动不该收掉预览`);
+    if (icons[1]) {
+      over(icons[1]);
+      okP(stage.querySelector('svg').innerHTML === icons[1].querySelector('svg').innerHTML,
+        `${label}：换图标后预览内容应跟着换`);
+      out(icons[1], doc.body);
+    } else {
+      out(el, doc.body);
+    }
+    okP(preview.hidden, `${label}：离开图标后应收掉`);
+    okP(stage.innerHTML === '', `${label}：收掉后应清空内容`);
+  }
+
+  // 锚点会失效的三个场合
+  doc.getElementById('tab-live').click();
+  over(doc.querySelector('#tbodyLive .lift-icon'));
+  type('梯门状态');
+  console.log(`  搜索重渲染后          ${preview.hidden ? '已收起' : '仍在（错）'}`);
+  okP(preview.hidden, '重渲染会换掉锚点节点，预览必须收起');
+  type('');
+
+  over(doc.querySelector('#tbodyLive .lift-icon'));
+  doc.getElementById('tab-modes').click();
+  console.log(`  切页签后              ${preview.hidden ? '已收起' : '仍在（错）'}`);
+  okP(preview.hidden, '切页签后应收起预览');
+
+  over(doc.querySelector('#tbody .lift-icon'));
+  doc.querySelector('#tbody .note-btn').click();
+  console.log(`  注释弹窗打开后        ${preview.hidden ? '已收起' : '仍在（错）'}`);
+  okP(preview.hidden, '模态弹窗打开时不该有别的浮层在场（蒙层半透明，会透出来）');
+  doc.getElementById('noteEditorCancel').click();
+
+  // 平台列的图标不在范围内
+  const other = doc.querySelector('#tbody .iot-mode__icon') || doc.querySelector('#tbody .amc-img');
+  over(other);
+  console.log(`  平台列图标 hover      ${preview.hidden ? '不出现（对）' : '出现了（错）'}`);
+  okP(preview.hidden, '只有标准版图标（.lift-icon）才触发预览');
+
+  // CSS 读数
+  const block = (html.match(/\.icon-preview \{[^}]*\}/s) || [''])[0];
+  const pick = (re) => (html.match(re) || [])[1];
+  const pw = pick(/\.icon-preview \{[^}]*?width:\s*(\d+)px/s);
+  const ph = pick(/\.icon-preview \{[^}]*?height:\s*(\d+)px/s);
+  const sw = pick(/\.icon-preview__stage \{[^}]*?width:\s*(\d+)px/s);
+  console.log(`  浮层 ${pw}×${ph} · 画框 ${sw}px（16 单位画框的 ${Number(sw) / 16} 倍）`);
+  okP(pw === ph, `浮层必须是正方形，实际 ${pw}×${ph}`);
+  okP(Number(sw) % 16 === 0, `画框必须是 16 的整数倍，实际 ${sw}px —— 非整数倍会把笔画抹糊`);
+  okP(/pointer-events:\s*none/.test(block), '浮层必须 pointer-events: none，否则 hover 会抖');
+
+  okP(errs.length === 0, `预览过程中不应报错：${errs.join('; ')}`);
+
+  if (pvFail.length) {
+    console.log('\n放大预览校验未通过：');
+    for (const f of pvFail) console.log('  ! ' + f);
+    process.exitCode = 1;
+  } else {
+    console.log('\n放大预览校验通过');
+  }
+
+  d4.window.close();
+}
+
+/* ============================================================
+   其他实时数据图标表的标准版筛选 + 手动争议标记
+   与模式图标表的那一套同源（同一个 createStdFilterMenu 实例化出来的），
+   但有三处刻意的不同，这一段就是来卡住这三处的：
+     1. 只有「全部 / 新增/待确认」两档 —— 这张表 42 行全都填了标准版
+     2. 纯手动：默认 0 个点亮，没有自动判定
+     3. 粒度到「候选」：两候选的行（轿门传感器振动 横向 / 垂直）两格各有一个点
+   另外验证两份标记互不串台（两个 localStorage key）、筛选与搜索是「与」关系、
+   以及筛选后 rowspan 仍然自洽。
+   ============================================================ */
+console.log('\n实时数据表的标准版筛选与争议标记');
+
+{
+  const v5 = new VirtualConsole();
+  const errs = [];
+  v5.on('jsdomError', (e) => errs.push(e.message));
+  const d5 = new JSDOM(html, {
+    runScripts: 'dangerously', virtualConsole: v5, pretendToBeVisual: true, url: 'http://localhost/',
+  });
+  const doc = d5.window.document;
+  const lvFail = [];
+  const okL = (cond, msg) => { if (!cond) lvFail.push(msg); };
+  const click = (el) => el.dispatchEvent(new d5.window.MouseEvent('click', { bubbles: true }));
+  const labelOf = (item) => [...item.querySelectorAll('span')]
+    .map((s) => s.textContent.trim()).filter((t) => t && !/^\d+$/.test(t))[0];
+
+  doc.getElementById('tab-live').click();
+  const bodyRows = () => [...doc.querySelectorAll('#tbodyLive tr')]
+    .filter((tr) => !tr.classList.contains('empty-row'));
+  const dots = () => [...doc.querySelectorAll('#tbodyLive .dispute-dot')];
+  const lit = () => dots().filter((d) => d.getAttribute('aria-pressed') === 'true');
+  /* 筛选菜单开合都靠点按钮。读完就关，免得菜单留着影响后面的点空白关闭逻辑。 */
+  const menuItems = () => {
+    click(doc.getElementById('liveStdFilterBtn'));
+    const items = [...doc.querySelectorAll('#liveStdFilterMenu .th-filter__item')].map((x) => ({
+      key: x.getAttribute('data-key'),
+      label: labelOf(x),
+      count: Number(x.querySelector('.th-filter__count').textContent.trim()),
+      on: x.getAttribute('aria-checked') === 'true',
+    }));
+    const reset = doc.querySelector('#liveStdFilterMenu .th-filter__reset');
+    const resetText = reset ? reset.textContent.trim() : null;
+    click(doc.getElementById('liveStdFilterBtn'));
+    return { items, resetText };
+  };
+  const pickFilter = (key) => {
+    click(doc.getElementById('liveStdFilterBtn'));
+    const it = [...doc.querySelectorAll('#liveStdFilterMenu .th-filter__item')]
+      .find((x) => x.getAttribute('data-key') === key);
+    click(it);
+  };
+  /* 筛选后 rowspan 必须仍然自洽（算法同「放大预览」那段的 gridOk） */
+  const gridOk = (label) => {
+    const cols = 9;
+    const trs = [...doc.querySelectorAll('#tbodyLive tr')];
+    const grid = trs.map(() => new Array(cols).fill(0));
+    trs.forEach((tr, ri) => {
+      let ci = 0;
+      for (const cell of tr.children) {
+        while (ci < cols && grid[ri][ci]) ci++;
+        const rs = Number(cell.getAttribute('rowspan') || 1);
+        const cs = Number(cell.getAttribute('colspan') || 1);
+        for (let r = 0; r < rs; r++) {
+          for (let c = 0; c < cs; c++) {
+            if (ri + r >= trs.length || ci + c >= cols) { okL(false, `${label} 单元格越界`); return; }
+            if (grid[ri + r][ci + c]) { okL(false, `${label} 单元格重叠`); return; }
+            grid[ri + r][ci + c] = 1;
+          }
+        }
+        ci += cs;
+      }
+    });
+    okL(grid.every((row) => row.every((v) => v)), `${label} 有没填满 ${cols} 列的行`);
+  };
+
+  const total = bodyRows().length;
+  const m0 = menuItems();
+  console.log('  筛选档位              ' + m0.items.map((i) => `${i.label} ${i.count}`).join(' / ')
+    + ` · 当前 ${m0.items.find((i) => i.on)?.label}`);
+  okL(m0.items.length === 2, `只该有「全部 / 新增/待确认」两档，实际 ${m0.items.length} 档`);
+  okL(m0.items[0].key === 'all' && m0.items[1].key === 'disputed', '两档应是 all / disputed');
+  okL(m0.items[0].count === total, `「全部」的计数应等于全量行数 ${total}`);
+  okL(m0.items[1].count === 0, '纯手动标记，默认「新增/待确认」应为 0');
+  okL(m0.items[0].on, '默认档位应是「全部」');
+  okL(m0.resetText === null, '没有手动标记时不该出现清除入口');
+
+  // 每格一个点：42 行里有 2 行是两候选 → 44 个格子 44 个点
+  console.log(`  争议标记按钮          ${dots().length} 个（行数 ${total}，含两候选行各 2 格）`);
+  okL(dots().length === 44, `按钮数应为 44（42 行 + 2 个两候选行各多一格），实际 ${dots().length}`);
+  okL(lit().length === 0, '默认不该有点亮的点');
+  okL(!doc.querySelector('#tbodyLive .dispute-dot--manual'), '默认不该有手动标注');
+
+  /* 两候选的行：同一行里两个点、id 不同（行标识相同、候选图标键不同），
+     互不联动 —— 要存疑的是某一个候选。 */
+  const twoCellRow = bodyRows().find((tr) => tr.querySelectorAll('.dispute-dot').length === 2);
+  okL(!!twoCellRow, '应能找到一行有两个争议标记（两个并存候选）');
+  const pair = [...twoCellRow.querySelectorAll('.dispute-dot')]
+    .map((d) => d.getAttribute('data-dispute-live'));
+  console.log(`  两候选行的两个 id      ${pair.join('  |  ')}`);
+  okL(pair[0] !== pair[1], '同一行两格的标识必须不同');
+  okL(pair.every((id) => /#/.test(id)), '标识应是「行#候选图标键」的形式');
+  click(twoCellRow.querySelectorAll('.dispute-dot')[0]);
+  const pairLit = [...twoCellRow.querySelectorAll('.dispute-dot')]
+    .map((d) => d.getAttribute('aria-pressed'));
+  console.log(`  点亮左格后            左 ${pairLit[0]} / 右 ${pairLit[1]}（右格不该联动）`);
+  okL(pairLit[0] === 'true' && pairLit[1] === 'false', '两个候选的标记必须各自独立');
+  click(twoCellRow.querySelectorAll('.dispute-dot')[0]);   // 还原
+
+  // 手动点亮：外观、tooltip、计数、落盘
+  const d1 = dots()[1];
+  const id1 = d1.getAttribute('data-dispute-live');
+  click(d1);
+  const after = dots().find((d) => d.getAttribute('data-dispute-live') === id1);
+  console.log(`  手动点亮 ${id1}`);
+  console.log(`    aria-pressed=${after.getAttribute('aria-pressed')}`
+    + ` 手动=${after.classList.contains('dispute-dot--manual')}`
+    + ` title=${JSON.stringify(after.title)}`);
+  okL(after.getAttribute('aria-pressed') === 'true', '点一下应点亮');
+  okL(after.classList.contains('dispute-dot--on'), '点亮态应带 --on');
+  okL(after.classList.contains('dispute-dot--manual'), '这张表的点亮一律是手动标注');
+  okL(/手动标注/.test(after.title), 'tooltip 应说明是手动标注');
+  const store = () => JSON.parse(d5.window.localStorage.getItem('modes-icons.liveDisputeOverrides.v1') || '{}');
+  console.log(`    落盘                ${JSON.stringify(store())}`);
+  okL(store()[id1] === true, '应落到 liveDisputeOverrides 这个 key 上');
+  /* 两份标记互不串台：模式图标表那份不能被这边写脏 */
+  const modesStore = JSON.parse(d5.window.localStorage.getItem('modes-icons.disputeOverrides.v1') || 'null');
+  console.log(`    模式表那份          ${JSON.stringify(modesStore)}（应为 null，没被碰过）`);
+  okL(modesStore === null, '这张表的标记不该写进模式图标表的 key');
+
+  const m1 = menuItems();
+  console.log(`  点亮后菜单            ${m1.items.map((i) => `${i.label} ${i.count}`).join(' / ')}`
+    + ` · ${m1.resetText}`);
+  okL(m1.items[1].count === 1, '「新增/待确认」计数应变成 1');
+  okL(/已手动标记 1 项/.test(m1.resetText || ''), '应出现清除入口并显示手动标记数');
+
+  // 切到「新增/待确认」：只剩被标的那一行
+  pickFilter('disputed');
+  console.log(`  筛「新增/待确认」           ${bodyRows().length} 行 · 按钮 data-active=`
+    + doc.getElementById('liveStdFilterBtn').getAttribute('data-active'));
+  okL(bodyRows().length === 1, `筛「新增/待确认」应只剩 1 行，实际 ${bodyRows().length}`);
+  okL(doc.getElementById('liveStdFilterBtn').getAttribute('data-active') === 'true',
+    '非「全部」档位时筛选按钮应高亮');
+  gridOk('筛「新增/待确认」后');
+
+  // 筛选与搜索是「与」关系：两个条件都满足才留下
+  const input = doc.getElementById('searchInput');
+  const type = (v) => { input.value = v; input.dispatchEvent(new d5.window.Event('input', { bubbles: true })); };
+  type('噪音');
+  const emptyCell = doc.querySelector('#tbodyLive tr.empty-row td');
+  console.log(`  叠加搜索「噪音」        ${bodyRows().length} 行 · 空状态「${emptyCell?.textContent.trim()}」`);
+  okL(bodyRows().length === 0, '「噪音」不在新增/待确认里，叠加后应为空');
+  okL(/关键词/.test(emptyCell?.textContent || '') && /标准版/.test(emptyCell?.textContent || ''),
+    '空状态要同时说明是哪两个条件筛空的');
+  okL(emptyCell?.getAttribute('colspan') === '9', '空状态 colspan 应为 9');
+  type('');
+
+  /* 在「新增/待确认」档位下熄灭 → 那一行要从结果里消失（整表重渲染那条分支） */
+  click(dots()[0]);
+  console.log(`  筛「新增/待确认」下熄灭      ${bodyRows().length} 行（应为 0）`);
+  okL(bodyRows().length === 0, '熄灭后该行应从「新增/待确认」结果里消失');
+
+  // 清除入口：回到干净状态
+  pickFilter('all');
+  click(dots()[1]);
+  click(dots()[2]);
+  console.log(`  再标两个后点亮          ${lit().length} 个`);
+  okL(lit().length === 2, '应能标多个');
+  click(doc.getElementById('liveStdFilterBtn'));
+  click(doc.querySelector('#liveStdFilterMenu .th-filter__reset'));
+  console.log(`  清除后点亮              ${lit().length} 个 · 落盘 ${JSON.stringify(store())}`);
+  okL(lit().length === 0, '清除后不该有点亮的点');
+  okL(Object.keys(store()).length === 0, '清除后落盘应为空');
+  okL(!doc.querySelector('#tbodyLive .dispute-dot--manual'), '清除后不该残留手动标注');
+
+  // 模式图标表那份不受影响：仍然是 14 个自动点亮
+  doc.getElementById('tab-modes').click();
+  const modesLit = doc.querySelectorAll('#tbody .dispute-dot[aria-pressed="true"]').length;
+  console.log(`  模式表默认点亮          ${modesLit} 个（自动判定，未受影响）`);
+  okL(modesLit === 14, `模式图标表仍应有 14 个自动点亮，实际 ${modesLit}`);
+
+  okL(errs.length === 0, `过程中不应报错：${errs.join('; ')}`);
+
+  if (lvFail.length) {
+    console.log('\n实时数据表筛选与争议标记校验未通过：');
+    for (const f of lvFail) console.log('  ! ' + f);
+    process.exitCode = 1;
+  } else {
+    console.log('\n实时数据表筛选与争议标记校验通过');
+  }
+
+  d5.window.close();
 }

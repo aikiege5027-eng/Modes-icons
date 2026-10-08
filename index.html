@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>电梯模式图标 · 各平台应用现状</title>
+<title>电梯相关图标汇总</title>
 <style>
 /* ============================================================
    KONE China Design Token — 仅使用语义化层（China Token）
@@ -1268,8 +1268,59 @@ td.cell-type { text-align: center; white-space: nowrap; }
   width: var(--comp-size-xxs);       /* 20px —— 原为 --comp-size-xxxs（16px） */
   height: var(--comp-size-xxs);
   color: var(--text-color-primary);
+  /* 悬停出放大预览（见下面 .icon-preview 与 JS 里的 showIconPreview），
+     给个 zoom-in 光标把「这里能放大看」说出来 —— 20px 的小图标不会有人
+     主动去悬停试探。 */
+  cursor: zoom-in;
 }
 .lift-icon svg { display: block; width: 100%; height: 100%; }
+
+/* ============================================================
+   标准版图标的放大预览浮层
+   三张表的标准版图标（都是 .lift-icon）悬停即出，看 20px 框里看不清的细节。
+
+   尺寸 160×160，按要求「约 4 个单元格、正方形」来的：
+     一个标准版格子约 122×46（平台列下限 122，行高 46），4 格 = 22448px²，
+     折成正方形边长 ≈ 150 —— 取 160 是为了让图标落在 128px 的画框上。
+
+   为什么是 128：这批图标全是 16 单位画框（见 .lift-icon 的注释），
+   128 = 16×8，整数倍放大，1 个 user unit 正好 8px、1 单位的笔画渲成 8px 实边。
+   换成 150 这类非整数倍会把每根笔画抹出半像素灰边 —— 正是 20px 框现在的毛病，
+   放大预览要解决的恰恰是它，不能再带进来。
+
+   pointer-events: none 是必须的：浮层会盖住触发它的那一格（下方放不开时翻到
+   上方，正好压在图标上），一旦它吃鼠标事件，hover 会在「进浮层 → 离开图标」
+   之间反复抖动，预览就开始闪。
+   z-index 60 与注释气泡同档，低于注释弹窗的蒙层（69）—— 弹窗打开时它该被压住。
+   ============================================================ */
+.icon-preview {
+  position: fixed;
+  z-index: 60;
+  box-sizing: border-box;
+  width: 160px;
+  height: 160px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-large);
+  border: 1px solid var(--component-stroke);
+  background: var(--bg-color-container);
+  /* Drop Shadow/M，与 BackTopFab / 注释气泡同一档 */
+  box-shadow: 0 0 1px rgba(20, 20, 20, 0.06), 0 10px 15px -3px rgba(20, 20, 20, 0.1),
+              0 4px 6px -2px rgba(20, 20, 20, 0.05);
+  pointer-events: none;
+}
+.icon-preview[hidden] { display: none; }
+/* 128×128 的画框。颜色同格子里那份（text-color-primary，深色模式下自动变白），
+   不另设一套 —— 预览要如实反映表里那张图，不是另一种渲染。 */
+.icon-preview__stage {
+  display: block;
+  width: 128px;
+  height: 128px;
+  color: var(--text-color-primary);
+}
+.icon-preview__stage svg { display: block; width: 100%; height: 100%; }
 
 /* 模式图标表的「标准版」格：库图标 + 库里的英文名 */
 .std-mode {
@@ -1302,7 +1353,7 @@ td.cell-type { text-align: center; white-space: nowrap; }
    一个是带字的标签、一个是小圆点，不会混。
 
    这一列每一格都有这个按钮（含未填充的格），所以定位上下文给 .cell-std，
-   不再挂在「有争议」这个状态上 —— 否则熄灭的格子没有 relative，
+   不再挂在「已点亮」这个状态上 —— 否则熄灭的格子没有 relative，
    点会跑到表格左上角去。 */
 td.cell-std { position: relative; }
 
@@ -1351,7 +1402,7 @@ tbody tr:hover .dispute-dot,
 }
 
 /* 点亮态：实心黄点。自动判定和手动标注长得完全一样 —— 对看表的人来说
-   「这一行有争议」是同一件事，标记是谁打的不该影响它的视觉权重。
+   「这一行是新增/待确认」是同一件事，标记是谁打的不该影响它的视觉权重。
    两者的区别放在 tooltip 里：自动判定显示写死的理由，手动标注显示「（手动标注）」。
 
    曾经给手动标注加过一圈 warning-color-light 的外环做区分，撤掉了：
@@ -1963,7 +2014,7 @@ tbody tr:hover .note-btn--add,
 <header class="topnav">
   <div class="topnav__left">
     <img class="topnav__logo" src="assets/kone-logo.svg" alt="KONE" width="72" height="28">
-    <h1 class="topnav__app">电梯模式图标 · 各平台应用现状</h1>
+    <h1 class="topnav__app">电梯相关图标汇总</h1>
   </div>
   <!-- 右侧：搜索框 + 主题切换。
        模板原本规定这里是 search / language / notification / user 四个图标按钮，
@@ -2030,7 +2081,7 @@ tbody tr:hover .note-btn--add,
           <th colspan="3" scope="colgroup">内部工具</th>
           <th colspan="2" scope="colgroup">my KONE</th>
           <th rowspan="2" scope="col">LiveView</th>
-          <!-- 标准版表头带筛选：全部 / 已填充 / 未填充 / 争议项。
+          <!-- 标准版表头带筛选：全部 / 已填充 / 未填充 / 新增/待确认。
                菜单用 position: fixed —— 卡片是 overflow: clip，absolute 会被裁掉。 -->
           <th rowspan="2" scope="col" class="th-filter">
             <span class="th-filter__row">
@@ -2066,6 +2117,15 @@ tbody tr:hover .note-btn--add,
      放在格子里用 absolute 会被裁掉（同 .th-filter__menu 的理由）。
      全表共用这一份，不是每行一份，避免 84 份重复节点。 -->
 <div class="note-bubble" id="noteBubble" role="tooltip" hidden></div>
+
+<!-- 标准版图标的放大预览。三个页签共用这一份，理由同上面的气泡：
+     fixed 才不会被 .table-card 的 overflow: clip 裁掉，而且 84 + 34 + 44 个格子
+     各挂一份放大图没有必要 —— 鼠标一次只能停在一个格子上。
+     aria-hidden：这是纯视觉放大，内容在格子里已经有了（图标名 + title），
+     不往无障碍树里再塞一份。 -->
+<div class="icon-preview" id="iconPreview" aria-hidden="true" hidden>
+  <span class="icon-preview__stage" id="iconPreviewStage"></span>
+</div>
 
 <!-- 注释编辑弹窗。改成了「蒙层 + 居中大弹窗」的模态形态，原来是贴在按钮旁边的
      小浮层（320px 宽、96px 高的输入框），写不下几行字。
@@ -2136,9 +2196,12 @@ tbody tr:hover .note-btn--add,
          3. 名称两列不是「模式名称 中文 / 英文」，而是「实时数据名称 / 实时数据细分」
             两个独立列：前者是字段的汇总名（当前楼层、梯门状态…），后者是这个字段下的
             细分状态（上 / 下 / 停…）。三家设计稿这批字段都只有中文，所以没有英文列。
-         4.「标准版」表头不带筛选下拉 —— 那个下拉的按钮和菜单都是带 id 的单例
-            （stdFilterBtn / stdFilterMenu），筛选逻辑也跑在 ROWS 上，照搬会重复 id。
-            而且它占**两列**（两个并存候选的左右两格），见下面 colgroup 的注释。
+         4.「标准版」表头的筛选下拉只有「全部 / 新增/待确认」两档，比模式图标表少了
+            「已填充 / 未填充」—— 这张表 42 行全都填了标准版，那两档恒等于
+            42 / 0（见 LIVE_STD_FILTERS）。按钮与菜单是独立的一份实例
+            （liveStdFilterBtn / liveStdFilterMenu），与模式图标表共用同一套
+            渲染与定位代码（createStdFilterMenu），筛选跑在 LIVE_ROWS 上。
+            另外它占**两列**（两个并存候选的左右两格），见下面 colgroup 的注释。
          5. 没有注释列 —— 那一列是模式图标表的本地草稿功能，这张表里一直是空的，
             按要求整列去掉，理由与补回来的做法见 colgroup 里那条注释。
          表头因此只有一行，sticky 的 top 要单独写，见 CSS 里 #panel-live thead 那条。
@@ -2177,8 +2240,23 @@ tbody tr:hover .note-btn--add,
           <th scope="col">LiveView</th>
           <!-- 标准版占两列：表头横跨两列，不写成两个子表头 ——
                这两列不是两个不同的语义，而是同一列里「两个并存候选」的左右两格。
-               scope 用 colgroup 而不是 col，如实说明它管着两列。 -->
-          <th colspan="2" scope="colgroup">标准版</th>
+               scope 用 colgroup 而不是 col，如实说明它管着两列。
+
+               带筛选下拉，但只有「全部 / 新增/待确认」两档：这张表 42 行全都填了
+               标准版，「已填充 / 未填充」恒等于 42 / 0（见 LIVE_STD_FILTERS）。
+               按钮和菜单的 id 与模式图标表那一份不同（liveStdFilterBtn /
+               liveStdFilterMenu）—— 两张表各一份实例，共用同一套渲染与定位
+               代码，见 JS 里的 createStdFilterMenu。 -->
+          <th colspan="2" scope="colgroup" class="th-filter">
+            <span class="th-filter__row">
+              <span>标准版</span>
+              <button type="button" class="th-filter__btn" id="liveStdFilterBtn"
+                      aria-haspopup="menu" aria-expanded="false"
+                      aria-controls="liveStdFilterMenu"></button>
+            </span>
+            <div class="th-filter__menu" id="liveStdFilterMenu" role="menu"
+                 aria-label="按标准版筛选" hidden></div>
+          </th>
           <th scope="col">下载</th>
         </tr>
       </thead>
@@ -3538,7 +3616,7 @@ const STD_ICON_TARGETS = {
 };
 
 /* ============================================================
-   标准版里「有争议」的格 —— 左上角打黄点
+   标准版里「新增/待确认」的格 —— 左上角打黄点
    收的是「各平台给出的证据互相打架，或根本没有图形证据」这两种情况，
    需要设计侧拍板，不是我这边能靠比对推出来的。key 与 STD_ICONS 同名。
    没有收进来的几条，都是按要求撤掉或本就已定的，别再加回去：
@@ -3591,7 +3669,7 @@ const STD_ICON_DISPUTES = {
        + '那一行已改用 current（电流波形），所以评审若决定改用方向盘，直接取即可，'
        + '不需要再腾行。条目已从 STD_ICONS 删掉，按 node 612:953 重取。',
 
-  /* 这一批一律打点：不是因为选型有争议，而是因为它们还没过 icon 评审。
+  /* 这一批一律打点：不是因为选型待裁决，而是因为它们还没过 icon 评审。
      规范要求每两周评审一次、先进评审区，未评审的图标不能当已入库图标用。
      pendant 额外说明它是本批里图形证据最弱的一条。
      ⚠️ robot / setting_off / relevel / relevel_slow 现在都不再是 TDesign 改造件
@@ -3657,9 +3735,12 @@ const STD_ICON_DISPUTES = {
    ============================================================ */
 const DISPUTE_STORE_KEY = 'modes-icons.disputeOverrides.v1';
 
-function loadDisputeOverrides() {
+/* 读一份「key → 布尔」的本地覆盖。两张表各有一份（模式图标 / 其他实时数据），
+   存的东西形状一样，所以这里按 storeKey 取，不写死 —— 见
+   DISPUTE_STORE_KEY 与 LIVE_DISPUTE_STORE_KEY 两处调用。 */
+function loadBoolStore(storeKey) {
   try {
-    const raw = localStorage.getItem(DISPUTE_STORE_KEY);
+    const raw = localStorage.getItem(storeKey);
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     // 只收布尔值，防止手改过的脏数据把后面的判断带歪
@@ -3675,14 +3756,19 @@ function loadDisputeOverrides() {
   }
 }
 
-let disputeOverrides = loadDisputeOverrides();
-
-function saveDisputeOverrides() {
+/* 落盘同理按 key 写，两张表各存各的 */
+function saveBoolStore(storeKey, obj) {
   try {
-    localStorage.setItem(DISPUTE_STORE_KEY, JSON.stringify(disputeOverrides));
+    localStorage.setItem(storeKey, JSON.stringify(obj));
   } catch (e) {
     // 存不进去就算了，当前会话仍然可用
   }
+}
+
+let disputeOverrides = loadBoolStore(DISPUTE_STORE_KEY);
+
+function saveDisputeOverrides() {
+  saveBoolStore(DISPUTE_STORE_KEY, disputeOverrides);
 }
 
 /* 行的稳定标识。英文名优先，没有英文名的行（IoT 直梯 90~95 那几条
@@ -3717,11 +3803,11 @@ function disputeDotView(r) {
   const st = disputeState(r);
   let text;
   if (!st.on) {
-    text = '标记为争议项';
+    text = '标记为新增/待确认';
   } else if (st.manual) {
-    text = '争议项（手动标注）。点击取消标记';
+    text = '新增/待确认（手动标注）。点击取消标记';
   } else {
-    text = '有争议：' + st.reason + '\n点击取消标记';
+    text = '新增/待确认：' + st.reason + '\n点击取消标记';
   }
   return {
     pressed: st.on,
@@ -3765,6 +3851,130 @@ function toggleDispute(id) {
   if (next === !!(r.stdDispute || '')) delete disputeOverrides[id];
   else disputeOverrides[id] = next;
   saveDisputeOverrides();
+}
+
+/* ============================================================
+   其他实时数据图标表的争议标记
+
+   视觉与交互和模式图标表完全一样（同一套 .dispute-dot、点一下切换、落
+   localStorage），两处差别是有意的：
+
+   1. **纯手动，没有自动判定。** 模式图标那边的自动判定来自 STD_ICON_DISPUTES，
+      是对着每一次选型逐条写下的理由；这批实时数据字段还没有这样的裁决记录，
+      硬套规则只会凭空标出一批「标了但说不出理由」的点。所以这张表里
+      点亮的每一个点都是人工标的，tooltip 也就只说「手动标注」。
+      以后真的攒出了理由清单，照 disputeState 的 effective 写法接进来即可
+      —— 下面 liveDisputeOn 留着的就是那一层。
+
+   2. **粒度是「行 + 候选图标」，不只是行。** 这张表有两行各有两个并存的候选
+      （轿门传感器振动 横向 / 垂直，见 liveStdCell），人要存疑的是其中某一个
+      候选而不是整行，所以两格各有自己的点、各自开关。
+      顺带一个有用的后果：某行换了标准版图标，旧 key 自然失效 ——
+      对旧图的存疑不该默认继承给新图。
+
+   3. **单独一个 localStorage key。** 不和模式图标那份混在一起，否则两个筛选
+      菜单底部的「已手动标记 N 项」会互相串数。
+   ============================================================ */
+const LIVE_DISPUTE_STORE_KEY = 'modes-icons.liveDisputeOverrides.v1';
+
+let liveDisputeOverrides = loadBoolStore(LIVE_DISPUTE_STORE_KEY);
+
+function saveLiveDisputeOverrides() {
+  saveBoolStore(LIVE_DISPUTE_STORE_KEY, liveDisputeOverrides);
+}
+
+/* 行标识：梯型 + 字段 + 细分状态。实测 42 行在这个规则下互不重复。
+   ⚠️ 不能只用「字段 + 细分」：速度这个字段在直梯和扶梯下各有一组同名行。 */
+function liveRowId(r) {
+  return r.lift + '/' + r.f + '/' + r.s;
+}
+
+/* 一格的标识 = 行标识 # 候选图标键。没填标准版的格子用空后缀（目前 0 行，
+   但 liveStdCell 支持空槽，这里一起兜住）。 */
+function liveDisputeId(r, stdKey) {
+  return liveRowId(r) + '#' + (stdKey || '');
+}
+
+/* 这一行的标准版候选键。一个候选 → 一个元素；两个候选 → 两个；没填 → 空数组。
+   渲染（liveStdCell）和筛选（LIVE_STD_FILTERS 的「新增/待确认」）都走这一份，
+   免得两边各写一遍 Array.isArray 的分支、哪天不一致。 */
+function liveStdKeys(r) {
+  if (Array.isArray(r.std)) return r.std.filter(Boolean);
+  return r.std ? [r.std] : [];
+}
+
+/* 这一行会渲染出来的那几个格子的标识，顺序与 liveStdCell 输出的 td 一致 */
+function liveStdCellIds(r) {
+  const keys = liveStdKeys(r);
+  if (!keys.length) return [liveDisputeId(r, '')];
+  return keys.map(function (k) { return liveDisputeId(r, k); });
+}
+
+function liveDisputeOn(id) {
+  return !!liveDisputeOverrides[id];
+}
+
+// 行级口径：这一行只要有一个候选被标了，整行就算「新增/待确认」（筛选用这个）
+function liveRowDisputed(r) {
+  return liveStdCellIds(r).some(liveDisputeOn);
+}
+
+function liveManualMarkCount() {
+  return Object.keys(liveDisputeOverrides).length;
+}
+
+/* 点的外观。与 disputeDotView 分开写而不是复用：那边要处理「自动判定 /
+   手动覆盖 / 带理由」三种情形，这边只有开关两态，合成一个函数会把两张表
+   各自的规则缠在一起。共用的是 CSS（.dispute-dot 那一套）。 */
+function liveDisputeDotView(id) {
+  const on = liveDisputeOn(id);
+  return {
+    pressed: on,
+    text: on ? '新增/待确认（手动标注）。点击取消标记' : '标记为新增/待确认',
+    // --manual 不带样式，只是状态标记（见 .dispute-dot--on 那条 CSS 的注释）
+    cls: 'dispute-dot' + (on ? ' dispute-dot--on dispute-dot--manual' : ''),
+  };
+}
+
+/* data 属性用 dispute-live，与模式图标表的 dispute-row 分开 ——
+   两张表的 id 空间不同（这边是 梯型/字段/状态#图标键），
+   同名属性会让两个委托处理器互相捡错对象。 */
+function liveDisputeDot(id) {
+  const v = liveDisputeDotView(id);
+  return '<button type="button" class="' + v.cls + '"'
+    + ' data-dispute-live="' + esc(id) + '"'
+    + ' aria-pressed="' + (v.pressed ? 'true' : 'false') + '"'
+    + ' title="' + esc(v.text) + '" aria-label="' + esc(v.text) + '"></button>';
+}
+
+// 就地更新一个已有的点，不替换节点（理由同 refreshDisputeDot）
+function refreshLiveDisputeDot(el, id) {
+  const v = liveDisputeDotView(id);
+  el.className = v.cls;
+  el.setAttribute('aria-pressed', v.pressed ? 'true' : 'false');
+  el.setAttribute('aria-label', v.text);
+  el.title = v.text;
+}
+
+/* 切换。纯手动，没有「与自动判定一致就删掉记录」那一步 ——
+   这里熄灭就等于没标，直接把 key 删掉，「已手动标记 N 项」才数得准。 */
+function toggleLiveDispute(id) {
+  if (liveDisputeOn(id)) delete liveDisputeOverrides[id];
+  else liveDisputeOverrides[id] = true;
+  saveLiveDisputeOverrides();
+}
+
+/* 筛选档。按要求只有两档 —— 这张表 42 行全都填了标准版，
+   「已填充 / 未填充」恒等于 42 / 0，列出来只是噪声。
+   以后出现没填的行，照 STD_FILTERS 的写法加两条 test 即可。 */
+const LIVE_STD_FILTERS = [
+  { key: 'all',      label: '全部',  test: function () { return true; } },
+  { key: 'disputed', label: '新增/待确认', test: liveRowDisputed },
+];
+let liveStdFilter = 'all';
+
+function liveStdFilterDef(key) {
+  return LIVE_STD_FILTERS.filter(function (f) { return f.key === key; })[0] || LIVE_STD_FILTERS[0];
 }
 
 /* ============================================================
@@ -4729,10 +4939,18 @@ function nameEn(r) {
      all       全部
      filled    已填充 —— 这一行的标准版填了图标
      empty     未填充 —— 还没找到/还没定的
-     disputed  争议项 —— 黄点点亮的（STD_ICON_DISPUTES 的自动判定 + 手动标注）
+     disputed  新增/待确认 —— 黄点点亮的（STD_ICON_DISPUTES 的自动判定 + 手动标注）
 
-   「争议项」不是「已填充」的子集 —— 手动标注可以打在未填充的行上，所以它跨两档。
-   外部素材改造的 6 个图标默认都在争议项里（它们都还没过 icon 评审）。
+   ⚠️ 命名：界面上这一档叫「新增/待确认」，代码里的标识仍然是 disputed
+   （以及 dispute-dot / disputeOverrides / localStorage 的两个 key）。
+   没跟着改名是有理由的：key 一改，用户本机已有的手动标记全部失效；
+   class 名一改要牵动 CSS 与两支校验脚本。所以「显示名在 label / tooltip 里，
+   标识名留在代码里」，两者有意不同 —— 看到 disputed 就读成「新增/待确认」。
+   这个叫法也更贴合实际构成：自动点亮的那批多数是「设计新画 / 外部素材改造、
+   还没过 icon 评审」（新增）与「选型待设计确认」（待确认）两类。
+
+   这一档不是「已填充」的子集 —— 手动标注可以打在未填充的行上，所以它跨两档。
+   外部素材改造的 6 个图标默认都在这一档里（它们都还没过 icon 评审）。
    这一档的计数会跟着手动标注实时变，不是写死的。
 
    图标来源（库内 / 库外）不再作为筛选档 —— 单元格 tooltip 里已经写了真实来源，
@@ -4744,7 +4962,7 @@ const STD_FILTERS = [
   { key: 'all',      label: '全部',   test: function () { return true; } },
   { key: 'filled',   label: '已填充',  test: function (r) { return !!r.std; } },
   { key: 'empty',    label: '未填充',  test: function (r) { return !r.std; } },
-  { key: 'disputed', label: '争议项',  test: function (r) { return disputeState(r).on; } },
+  { key: 'disputed', label: '新增/待确认', test: function (r) { return disputeState(r).on; } },
 ];
 let stdFilter = 'all';
 
@@ -4755,6 +4973,10 @@ function stdFilterDef(key) {
 function render(keyword) {
   const kw = (keyword || '').trim().toLowerCase();
   const stdTest = stdFilterDef(stdFilter).test;
+  /* 整段 innerHTML 重渲染会把放大预览的锚点节点换掉，留着它就成了一张
+     指向已删除节点的浮层（位置不再更新、也等不到 mouseout）。三个 render
+     各自收一次，见 hideIconPreview 那一段。 */
+  hideIconPreview();
   /* 搜索范围 = 这一行在表里显示出来的所有「名称」，逐列对应：
        中文名 / 英文名        r.zh / r.en
        AMC 图标名             r.amc
@@ -4905,10 +5127,119 @@ function hideNoteBubble() {
   noteBubble.hidden = true;
 }
 
+/* ============================================================
+   标准版图标的放大预览
+   三张表的标准版图标都是 .lift-icon（20px 显示框），悬停即在旁边浮出一个
+   160×160 的方形预览，图标按 128px（16 单位画框的整数 8 倍）渲染。
+   尺寸与倍数的依据见 CSS 里 .icon-preview 的注释。
+
+   位置摆在格子左侧（放不开翻右侧），不走注释气泡那套「贴下方」的 placeFloating，
+   理由见 placeIconPreview 的注释。
+   ============================================================ */
+const iconPreview = document.getElementById('iconPreview');
+const iconPreviewStage = document.getElementById('iconPreviewStage');
+let iconPreviewAnchor = null;   // 当前预览的是哪一格的图标
+
+function showIconPreview(el) {
+  const svg = el.querySelector('svg');
+  if (!svg) return;
+  /* 直接克隆格子里那张 svg，不按图标名回查字典 —— 三张表的图标分别来自
+     STD_ICONS / LIFT_ICONS / LIVE_STD_ICONS，回查就得先判断这一格属于哪张表；
+     克隆则天然保证「预览的就是表里渲染的那一张」，三张表共用一条代码路径。
+     克隆后显式清掉 width/height 交给 CSS：现在源 svg 只有 viewBox，
+     但以后若给它补上固定宽高，预览会被锁死在 20px。 */
+  const big = svg.cloneNode(true);
+  big.removeAttribute('width');
+  big.removeAttribute('height');
+  iconPreviewStage.innerHTML = '';
+  iconPreviewStage.appendChild(big);
+  iconPreviewAnchor = el;
+  iconPreview.hidden = false;
+  // 先显示再量尺寸：hidden 状态下 offsetWidth/Height 都是 0，算不出位置
+  placeIconPreview();
+}
+
+/* 摆在格子的**左侧**（放不开翻到右侧），竖直方向与格子居中。
+   没有复用注释气泡那套 placeFloating（它是「贴下方、放不开翻上方」），有两个理由：
+     1. 浏览器原生的 title 提示会在光标**右下方**弹出来。摆下方的话，
+        原生提示正好压在这张放大图上 —— 而标准版图标的 title 带着来源和节点号，
+        不能为了预览把它摘掉，只能把预览让开。
+     2. 摆在侧面，被预览的那一行仍然看得见，可以一边看放大图一边对着行名读。
+   竖直夹的上界是导航栏 + 页签条的底边（两者都是 fixed，.tabs 的 rect.bottom
+   就是这条线），不是视口顶 8px —— 预览的 z-index 60 高于导航栏 10，
+   夹到视口顶会直接盖在导航栏上。 */
+function placeIconPreview() {
+  /* 按**格子**而不是那个 20px 图标来定位：图标在格子里是居中的，拿它算的话
+     浮层会往格子里探进半个列宽（约 50px），正好压住同一行的图标名。
+     竖直方向用格子也一样（行高 46px，与图标同心）。 */
+  const cell = iconPreviewAnchor.closest ? iconPreviewAnchor.closest('td') : null;
+  const a = (cell || iconPreviewAnchor).getBoundingClientRect();
+  const vw = document.documentElement.clientWidth;
+  const vh = document.documentElement.clientHeight;
+  const w = iconPreview.offsetWidth;
+  const h = iconPreview.offsetHeight;
+  const gap = 12;
+  const tabs = document.querySelector('.tabs');
+  const headerBottom = tabs ? tabs.getBoundingClientRect().bottom : 0;
+
+  let left = a.left - w - gap;
+  if (left < 8) left = a.right + gap;                 // 左边放不开翻到右边
+  left = Math.max(8, Math.min(left, vw - w - 8));     // 两边都放不开就夹在视口内
+
+  let top = a.top + a.height / 2 - h / 2;             // 与格子居中
+  top = Math.min(top, vh - h - 8);
+  top = Math.max(headerBottom + 8, top);
+
+  iconPreview.style.left = Math.round(left) + 'px';
+  iconPreview.style.top = Math.round(top) + 'px';
+}
+
+function hideIconPreview() {
+  iconPreview.hidden = true;
+  iconPreviewStage.innerHTML = '';
+  iconPreviewAnchor = null;
+}
+
+/* 委托在 document 上，一次覆盖三张表：三个 tbody 都是整段 innerHTML 重渲染的
+   （搜索、筛选、切页签都会重渲染），委托到 document 就不用在每次渲染后重新绑。 */
+document.addEventListener('mouseover', function (e) {
+  const el = e.target.closest ? e.target.closest('.lift-icon') : null;
+  if (!el) return;
+  if (el === iconPreviewAnchor) return;   // 在同一个图标内部挪动，不重建浮层
+  showIconPreview(el);
+});
+document.addEventListener('mouseout', function (e) {
+  if (!iconPreviewAnchor) return;
+  const from = e.target.closest ? e.target.closest('.lift-icon') : null;
+  if (from !== iconPreviewAnchor) return;
+  // svg → path 这种内部移动也会触发 mouseout，没真正离开就不收
+  if (e.relatedTarget && iconPreviewAnchor.contains(e.relatedTarget)) return;
+  hideIconPreview();
+});
+
+/* 滚动时跟着格子走，而不是一滚就收 —— 鼠标停在图标上滚一两行是常见操作，
+   收掉会让人以为预览坏了。
+   capture = true：滚的可能是 .table-scroll / body 这类内层容器，scroll 不冒泡。
+   格子被重渲染换掉（搜索时）或滚出视口后，锚点就失效了，这两种情况才收掉 ——
+   不收的话 placeFloating 会把浮层死死夹在视口边上。 */
+function trackIconPreview() {
+  if (!iconPreviewAnchor) return;
+  if (!document.body.contains(iconPreviewAnchor)) { hideIconPreview(); return; }
+  const a = iconPreviewAnchor.getBoundingClientRect();
+  const vh = document.documentElement.clientHeight;
+  if (a.bottom < 0 || a.top > vh) { hideIconPreview(); return; }
+  placeIconPreview();
+}
+window.addEventListener('scroll', trackIconPreview, true);
+window.addEventListener('resize', trackIconPreview);
+
 function openNoteEditor(btn, id) {
   const r = ROWS.filter(function (x) { return rowId(x) === id; })[0];
   if (!r) return;
   hideNoteBubble();
+  /* 放大预览的 z-index（60）低于蒙层（69），但蒙层是半透明的，留着会从蒙层底下
+     透出一张浮层。弹窗是模态，期间不该有别的浮层在场。 */
+  hideIconPreview();
 
   noteEditingId = id;
   noteReturnFocus = btn;
@@ -5060,7 +5391,7 @@ tbodyEl.addEventListener('click', function (e) {
   const id = dot.getAttribute('data-dispute-row');
   toggleDispute(id);
 
-  /* 只有当前正按「争议项」筛选时才整表重渲染 —— 那种情况下被熄灭的行要从
+  /* 只有当前正按「新增/待确认」筛选时才整表重渲染 —— 那种情况下被熄灭的行要从
      结果里消失，不重渲染就不对。其余筛选档与争议状态无关，
      整表重渲染会丢掉滚动位置和焦点，所以就地改这一个按钮。 */
   if (stdFilter === 'disputed') {
@@ -5069,8 +5400,8 @@ tbodyEl.addEventListener('click', function (e) {
     const r = ROWS.filter(function (x) { return rowId(x) === id; })[0];
     if (r) refreshDisputeDot(dot, r);
   }
-  // 菜单里的「争议项」计数和「已手动标记」那一行都要跟着变
-  if (!stdFilterMenu.hidden) renderStdFilterMenu();
+  // 菜单里的「新增/待确认」计数和「已手动标记」那一行都要跟着变
+  modesStdFilterUI.refreshIfOpen();
 });
 
 /* 拆格对齐 + 撑满整格。
@@ -5218,9 +5549,11 @@ document.getElementById('searchBox').addEventListener('click', function () {
   searchInput.focus();
 });
 
+/* 输入即筛选，筛的是**当前页签**那张表（renderActiveTab 定义在 Tabs 那一段，
+   这里只是引用；脚本是整段同步执行的，事件触发时它早已定义）。 */
 function applySearch() {
   searchBox.setAttribute('data-filled', searchInput.value ? 'true' : 'false');
-  render(searchInput.value);
+  renderActiveTab();
 }
 
 searchInput.addEventListener('input', applySearch);
@@ -5345,10 +5678,41 @@ const LIFT_ICON_ROWS = [
 /* 梯型 → 展示顺序：直梯、扶梯、步道梯 */
 const LIFT_ORDER = ['直梯', '扶梯', '步道梯'];
 
-function renderFunctionTable() {
-  const rows = LIFT_ICON_ROWS.slice().sort(function (a, b) {
+/* 搜索范围 = 这张表显示出来的文字，逐列对应：
+     梯型      r.lift
+     中文名    r.zh
+     英文名    r.en
+   不进范围的两列：标准版（只有图标，没有文字）、下载（SVG / PNG 两个按钮上的字）。
+   按要求把按钮文字排除掉 —— 它们每行都一样，搜 "svg" 会把整张表原样返回，
+   等于没筛。图标的 Figma 节点号同理不进范围：它只在 tooltip 里，表面看不见。
+
+   ⚠️ 梯型进范围，与「模式图标」表的决定相反（见 render() 里那段注释）：
+   那张表里梯型只有两种取值、搜它等于筛掉半张表；这张表本身就是按梯型分组的，
+   「扶梯」在这里是个有效的筛选词。 */
+function liftRowHay(r) {
+  return [r.lift, r.zh, r.en].join(' ').toLowerCase();
+}
+
+function renderFunctionTable(keyword) {
+  const kw = (keyword || '').trim().toLowerCase();
+  hideIconPreview();   // 理由见 render() 里同一行的注释
+  const rows = LIFT_ICON_ROWS.filter(function (r) {
+    return !kw || liftRowHay(r).indexOf(kw) !== -1;
+  }).sort(function (a, b) {
     return LIFT_ORDER.indexOf(a.lift) - LIFT_ORDER.indexOf(b.lift);
   });
+
+  /* 计数始终是这一类的总数，不跟着搜索走 —— 与「模式图标」页签的 TOTAL 一个口径，
+     页签上的数字表示「这一类一共收了多少条」，不是当前筛出几条。 */
+  document.getElementById('tabCountFunction').textContent = LIFT_ICON_ROWS.length;
+
+  if (!rows.length) {
+    // 列数 = 梯型 + 中文 + 英文 + 标准版 + 下载 = 5
+    document.getElementById('tbodyFunction').innerHTML =
+      '<tr class="empty-row"><td colspan="5">没有匹配关键词「'
+      + esc((keyword || '').trim()) + '」的图标</td></tr>';
+    return;
+  }
 
   const html = rows.map(function (r, idx) {
     const icon = LIFT_ICONS[r.key];
@@ -5377,7 +5741,6 @@ function renderFunctionTable() {
   }).join('');
 
   document.getElementById('tbodyFunction').innerHTML = html;
-  document.getElementById('tabCountFunction').textContent = rows.length;
 }
 
 /* ============================================================
@@ -6214,7 +6577,7 @@ const LIVE_ROWS = [
        库内两张走 B 类，是库里现成的 vibration-* 一族，构造（本体 + 体外方向标记）和
        方向都对得上，但本体是空盒、方向标记是锯齿波而不是门 —— 忠于库。
      ⚠️ 代价要讲清楚：一格两张图意味着这一行**还没有唯一答案**。下游要落地时不能
-     直接取数组第一个了事，得先有人裁决；这张表的标准版列也没有争议标记可以标它。
+     直接取数组第一个了事，得先有人裁决；这两格各自的「新增/待确认」黄点可以标上。
 
      ⚠️ 另一件仍然没解决的：横向与纵向这两张的唯一区别是门中缝的有无，
      16px 下几乎分辨不出（中缝就是 1px 一条竖线）。这是 IoT 自己的画法，不是这里简化的，
@@ -6331,9 +6694,11 @@ const LIVE_ROWS = [
      沿用下来的两条口径：
        1. 图形只表达「扶手带」，**不塞温度计** —— 手 + 扶手带 + 温度计在 16px 会糊成一团。
           温度这一层交给取值文字（23.5℃），与齿轮箱振动、能耗那几行一个口径。
-       2. **仍未入库、未过 icon 评审**：这张表的标准版列没有争议标记（模式图标表才有黄点），
-          所以这件事界面上没有视觉提示，只能靠 tooltip 的来源标记（IOT Delivery）
-          和这条注释表达 —— 与 gearboxVibration / doorVibration* / levelSensing 同一处境。
+       2. **仍未入库、未过 icon 评审**：这张表的标准版列现在也有「新增/待确认」黄点，
+          但它是纯手动的、默认不自动点亮（见「其他实时数据图标表的争议标记」第 1 条），
+          所以这件事目前仍然只靠 tooltip 的来源标记（IOT Delivery）和这条注释表达；
+          要让它在界面上显出来，把这几格手动标上即可
+          —— 与 gearboxVibration / doorVibration* / levelSensing 同一处境。
      ⚠️ 原来为了给自画那版留底子而保住的 LIVE_STD_ICONS.click 已经删掉：
      现在没有任何行或图标引用它。要找回来的话重新从 Figma 取 612:927。 */
   { lift: '扶梯', f: '左扶手温度', s: '有数值',
@@ -6598,19 +6963,30 @@ function liveLvCell(r, def) {
    代价：这张表每行的 td 数又多了一种情况（两候选的行比别的行多一格），
    rowspan 已经让格数不固定，这里只是再多一种，统计格数时别按固定值断言。
    顺序仍然不表示优先级（理由与用在哪几行见 LIVE_ROWS 里轿门传感器振动那一组的注释）。 */
-function liveStdCell(std) {
+/* ⚠️ 入参是**整行**而不是 r.std：每一格左上角还要放一个争议标记按钮，
+   按钮的 id 要带行标识（见 liveDisputeId）。 */
+function liveStdCell(r) {
   const td = function (inner, cls, span) {
     return '<td class="cell-icon cell-std' + (cls ? ' ' + cls : '') + '"'
       + (span ? ' colspan="2"' : '') + '>' + inner + '</td>';
   };
-  if (!std) return td(emptySlot(), '', true);
-  const keys = Array.isArray(std) ? std : [std];
-  if (keys.length === 1) return td(stdCell(LIVE_STD_ICONS[keys[0]]), '', true);
+  const keys = liveStdKeys(r);
+  const ids = liveStdCellIds(r);
+  /* 争议标记对每一格都渲染，包括没填图标的空槽 —— 空槽同样可能需要人工标
+     「这条待确认」，而且这一列的交互保持一致比少渲染几个按钮重要
+     （口径与模式图标表的 cell-std 一致）。 */
+  if (!keys.length) return td(liveDisputeDot(ids[0]) + emptySlot(), '', true);
+  if (keys.length === 1) {
+    return td(liveDisputeDot(ids[0]) + stdCell(LIVE_STD_ICONS[keys[0]]), '', true);
+  }
   /* 两个候选：左格多一个 cell-std--left，只为了把它右边那条竖线藏掉
      （两个候选之间按要求不画分隔线，见那条 CSS）。右格不需要标记 ——
-     它右边那条线是标准版整列的右边界，要留着。 */
+     它右边那条线是标准版整列的右边界，要留着。
+     两格各有自己的争议标记：要存疑的是某一个候选，不是整行（见
+     「其他实时数据图标表的争议标记」那一段的第 2 条）。 */
   return keys.map(function (k, i) {
-    return td(stdCell(LIVE_STD_ICONS[k]), i === 0 ? 'cell-std--left' : '', false);
+    return td(liveDisputeDot(ids[i]) + stdCell(LIVE_STD_ICONS[k]),
+      i === 0 ? 'cell-std--left' : '', false);
   }).join('');
 }
 
@@ -6645,6 +7021,35 @@ function liveDownloadCell(std) {
   return keys.length > 1 ? '<span class="dl-group">' + html + '</span>' : html;
 }
 
+/* 搜索范围 = 这一行在表里显示出来的所有文字，逐列对应：
+     梯型              r.lift
+     实时数据名称      r.f
+     实时数据细分      r.s（「不分状态」是本表的记号、不印在表上，所以不进范围，
+                       见 NO_STATE_MARK；但只因为「字段只有一行」而留空的那几行
+                       仍然进范围 —— 那是显示上的省略，词本身是这一行的真名）
+     IoT 取值文字      liveValueLabel(r.iot.v, r.s)
+     云视界 取值文字   liveValueLabel(r.yun.v, r.s)
+     LiveView 字段名   LIVEVIEW_LIVE_FIELDS[梯型/字段].label（英文，如 Door Status）
+     标准版 图标名     LIVE_STD_ICONS[...].name（两个候选的行两个名字都进）
+
+   不进范围的：下载列那两个按钮的字（SVG / PNG）—— 每行都一样，搜它等于不筛；
+   以及只活在 tooltip 里的东西（Figma 节点号、组件 variant、配色说明）——
+   表面看不见的文字搜出来会让人不知道命中在哪。 */
+function liveRowHay(r) {
+  const lv = LIVEVIEW_LIVE_FIELDS[r.lift + '/' + r.f];
+  const stdKeys = (Array.isArray(r.std) ? r.std : [r.std]).filter(Boolean);
+  return [
+    r.lift,
+    r.f,
+    r.s === NO_STATE_MARK ? '' : (r.s || ''),
+    r.iot ? liveValueLabel(r.iot.v, r.s) : '',
+    r.yun ? liveValueLabel(r.yun.v, r.s) : '',
+    lv ? lv.label : '',
+  ].concat(stdKeys.map(function (k) {
+    return LIVE_STD_ICONS[k] ? LIVE_STD_ICONS[k].name : '';
+  })).join(' ').toLowerCase();
+}
+
 /* 其他实时数据图标表（9 列 = 梯型 + 名称 + 细分 + 3 个平台 + 标准版×2 + 下载，
    列结构与「为什么没有注释列」见 #panel-live 的表头注释）。
    三个平台列（IoT / 云视界 / LiveView）都有数据，标准版待补充：
@@ -6653,8 +7058,36 @@ function liveDownloadCell(std) {
      含义不同，别混用）
      留空的细分格（哪两种情况见下面那一格的注释）、以及标准版还没定的那些行的
      下载格，用 .cell-blank 撑住 46px 行高 */
-function renderLiveTable() {
+function renderLiveTable(keyword) {
   const blank = '<span class="cell-blank"></span>';
+  const kw = (keyword || '').trim().toLowerCase();
+  hideIconPreview();   // 理由见 render() 里同一行的注释
+  /* 搜索后 rowspan 要按**筛出来的行**重算，所以下面一律用 rows，不要再直接读
+     LIVE_ROWS —— 拿全表去数合并跨度，会让跨度超过实际渲染的行数，
+     表格结构直接错位。唯一的例外是 fieldRows（见那里的注释）。
+     搜索与标准版筛选是「与」关系，两个条件同时满足才留下（同 render()）。 */
+  const stdTest = liveStdFilterDef(liveStdFilter).test;
+  const rows = LIVE_ROWS.filter(function (r) {
+    if (!stdTest(r)) return false;
+    return !kw || liveRowHay(r).indexOf(kw) !== -1;
+  });
+
+  /* 计数始终是这一类的总数，不跟着搜索或筛选走（口径同 TOTAL / tabCountFunction） */
+  document.getElementById('tabCountLive').textContent = LIVE_ROWS.length;
+
+  if (!rows.length) {
+    // 空状态要说清是哪个条件筛空的，只报一个会让人以为另一个没生效（同 render()）
+    const parts = [];
+    if (kw) parts.push('关键词「' + esc((keyword || '').trim()) + '」');
+    if (liveStdFilter !== 'all') {
+      parts.push('标准版「' + esc(liveStdFilterDef(liveStdFilter).label) + '」');
+    }
+    // 列数 = 梯型 + 名称 + 细分 + IoT + 云视界 + LiveView + 标准版×2 + 下载 = 9
+    document.getElementById('tbodyLive').innerHTML =
+      '<tr class="empty-row"><td colspan="9">没有同时满足 '
+      + parts.join(' 和 ') + ' 的实时数据字段</td></tr>';
+    return;
+  }
 
   /* 梯型、实时数据名称、LiveView 三列用 rowspan 真合并：连续的同类行合成一格，
      组内不再有横线。组首行输出这一格并带 rowspan，组内其余行整格不输出 ——
@@ -6666,11 +7099,15 @@ function renderLiveTable() {
   const fieldKey = function (r) { return r.lift + '/' + r.f; };
   const spanOf = function (idx, keyOf) {
     let n = 1;
-    while (idx + n < LIVE_ROWS.length && keyOf(LIVE_ROWS[idx + n]) === keyOf(LIVE_ROWS[idx])) n++;
+    while (idx + n < rows.length && keyOf(rows[idx + n]) === keyOf(rows[idx])) n++;
     return n;
   };
   /* 每个字段一共有几行。⚠️ 不能用 spanOf 代替：spanOf 从当前行往后数，
-     组里的最后一行永远得到 1，拿它判断「这个字段只有一行」会把每组的末行都算进去。 */
+     组里的最后一行永远得到 1，拿它判断「这个字段只有一行」会把每组的末行都算进去。
+     ⚠️ 这一项**按全表 LIVE_ROWS 数，不按筛选结果**：它只用来决定细分那一格要不要
+     留空（规则见下面那一格的注释），而「这个字段有几个细分状态」是数据的属性，
+     不该随搜索变。按筛选结果数的话，搜「已关闭」只命中一行，那一行的细分会被判成
+     「只有一行」而留空 —— 搜中的词恰好在表上看不见了。 */
   const fieldRows = {};
   LIVE_ROWS.forEach(function (r) {
     const k = fieldKey(r);
@@ -6678,13 +7115,13 @@ function renderLiveTable() {
   });
   /* 合并到最后一行的格子要去掉底边线，理由见 CSS 里 .cell-merge--last 的注释 */
   const mergeCls = function (idx, span) {
-    return 'cell-merge' + (idx + span === LIVE_ROWS.length ? ' cell-merge--last' : '');
+    return 'cell-merge' + (idx + span === rows.length ? ' cell-merge--last' : '');
   };
   // 只有一行的组不写 rowspan="1"（没有意义，只是噪音）
   const rowspanAttr = function (span) { return span > 1 ? ' rowspan="' + span + '"' : ''; };
 
-  const html = LIVE_ROWS.map(function (r, idx) {
-    const prev = LIVE_ROWS[idx - 1];
+  const html = rows.map(function (r, idx) {
+    const prev = rows[idx - 1];
     const firstOfLift = idx === 0 || prev.lift !== r.lift;
     const firstOfField = firstOfLift || prev.f !== r.f;
     const liftSpan = spanOf(idx, liftKey);
@@ -6736,13 +7173,12 @@ function renderLiveTable() {
          （目前只有轿门传感器振动 横向 / 垂直 两行）。详见那个函数的注释。
          下载：与另外两张表同一套导出，按钮挂图标键而不是行标识
          （两个候选的行按行取不出唯一一张图，见 liveDownloadCell）。 */
-      + liveStdCell(r.std)
+      + liveStdCell(r)
       + '<td class="cell-download">' + liveDownloadCell(r.std) + '</td>'
       + '</tr>';
   }).join('');
 
   document.getElementById('tbodyLive').innerHTML = html;
-  document.getElementById('tabCountLive').textContent = LIVE_ROWS.length;
 }
 
 /* ============================================================
@@ -6859,8 +7295,26 @@ document.getElementById('tbody').addEventListener('click', function (e) {
 });
 document.getElementById('tbodyLive').addEventListener('click', function (e) {
   const btn = e.target.closest ? e.target.closest('.dl-btn') : null;
-  if (!btn) return;
-  downloadLiveIcon(btn.dataset.live, btn.dataset.dl);
+  if (btn) {
+    downloadLiveIcon(btn.dataset.live, btn.dataset.dl);
+    return;
+  }
+
+  /* 争议标记。与模式图标表同一套处理（见 tbodyEl 上那个委托）：
+     正按「新增/待确认」筛选时整表重渲染 —— 被熄灭的行要从结果里消失；
+     其余档位与争议状态无关，整表重渲染会丢掉滚动位置和焦点，
+     所以就地改这一个按钮。 */
+  const dot = e.target.closest ? e.target.closest('.dispute-dot') : null;
+  if (!dot) return;
+  const id = dot.getAttribute('data-dispute-live');
+  toggleLiveDispute(id);
+  if (liveStdFilter === 'disputed') {
+    renderLiveTable(searchInput.value);
+  } else {
+    refreshLiveDisputeDot(dot, id);
+  }
+  // 菜单里的「新增/待确认」计数和「已手动标记」那一行都要跟着变
+  liveStdFilterUI.refreshIfOpen();
 });
 
 renderFunctionTable();
@@ -6868,22 +7322,36 @@ renderLiveTable();
 
 /* ============================================================
    Tabs
-   三个分类目前只有「模式图标」有数据。搜索与统计都只对它有意义，
-   所以切到另外两个分类时把搜索停用并清空，统计换成该分类的口径。
-   另外两个分类虽然已经有真实数据（梯形 / 功能图标 34 行、其他实时数据 45 行），
-   但它们的行不是由 render() 产出的，搜索逻辑跑在 ROWS 上，所以 hasData 仍为 false，
-   切过去时把搜索停用；页签计数各自在自己的 render 函数里写。
+   三个分类各有自己的数据源和自己的 render：
+     模式图标          ROWS            render()
+     梯形 / 功能图标   LIFT_ICON_ROWS  renderFunctionTable()
+     其他实时数据图标  LIVE_ROWS       renderLiveTable()
+   搜索框是三个页签共用的一个控件，所以它不直接调某一个 render，而是调
+   renderActiveTab() 由当前页签决定走哪个（见那个函数）。每个 render 自己负责
+   在它那张表的列范围内做模糊匹配 —— 三张表的列不一样，没有通用的搜索范围。
+
+   页签计数不受搜索影响：它表示「这一类一共收了多少条」，由各 render 写成总数。
    ============================================================ */
 const TABS = [
-  { tab: 'tab-modes',    panel: 'panel-modes',    hasData: true  },
-  { tab: 'tab-function', panel: 'panel-function', hasData: false },
-  { tab: 'tab-live',     panel: 'panel-live',     hasData: false },
+  { tab: 'tab-modes',    panel: 'panel-modes',    render: function (kw) { render(kw); } },
+  { tab: 'tab-function', panel: 'panel-function', render: renderFunctionTable },
+  { tab: 'tab-live',     panel: 'panel-live',     render: renderLiveTable },
 ];
+let activeTab = 'tab-modes';
+
+/* 搜索框、以及任何「当前这张表要重渲染」的场合都走这里。
+   ⚠️ 别改回直接调 render()：那只会刷「模式图标」那张表，在另外两个页签上
+   表现为「输入了但没反应」。 */
+function renderActiveTab() {
+  const t = TABS.find(function (x) { return x.tab === activeTab; }) || TABS[0];
+  t.render(searchInput.value);
+}
 
 document.getElementById('tabCountModes').textContent = TOTAL;
 
 function selectTab(id) {
   const target = TABS.find(function (t) { return t.tab === id; });
+  activeTab = target.tab;
 
   /* 注释的气泡和弹窗都在 panel 外面（fixed 定位需要），切 tab 不会被 hidden 带走，
      所以这里手动收掉 —— 否则换了分类还飘着上一个分类某行的编辑框。 */
@@ -6898,15 +7366,10 @@ function selectTab(id) {
     document.getElementById(t.panel).hidden = !on;
   });
 
-  // 搜索只在有数据的分类里可用
-  searchInput.disabled = !target.hasData;
-  if (!target.hasData) {
-    searchInput.value = '';
-    searchBox.setAttribute('data-filled', 'false');
-  }
-  searchBox.style.opacity = target.hasData ? '' : '0.5';
-
-  if (target.hasData) render(searchInput.value);
+  /* 关键词跨页签保留，不清空：三张表描述的是同一批语义在不同口径下的现状，
+     带着同一个词切过去看「另一张表里有没有」是这个页面的主要用法之一。
+     切过去之后立刻按当前关键词重渲染目标表 —— 它上一次渲染用的可能是别的词。 */
+  renderActiveTab();
 }
 
 TABS.forEach(function (t, i) {
@@ -6972,128 +7435,181 @@ window.addEventListener('resize', syncStickyOffsets);
 
 /* ============================================================
    标准版表头的筛选下拉
+   两张表各一份实例：模式图标（全部 / 已填充 / 未填充 / 新增/待确认）、
+   其他实时数据图标（全部 / 新增/待确认，见 LIVE_STD_FILTERS）。
+   两份实例共用下面这一套渲染、定位、开合与键鼠行为，差别全部收进入参：
+     btnId / menuId  表头里那两个节点的 id
+     filters         档位定义
+     rows()          算各档条数用的全量数据
+     getKey/setKey   当前档位存在哪个变量上
+     manualCount()   菜单底部「已手动标记 N 项」的数
+     clearManual()   那一条的清除动作
+     rerender()      改完档位 / 清完标记之后重渲染哪张表
+   为什么做成实例而不是复制一份：这套东西里有 fixed 菜单的定位与视口夹取、
+   跟随滚动、点空白关闭、Esc 关闭、焦点归还 6 件事，复制就意味着以后每改
+   一处都得记着改两遍。
    ============================================================ */
-const stdFilterBtn = document.getElementById('stdFilterBtn');
-const stdFilterMenu = document.getElementById('stdFilterMenu');
+function createStdFilterMenu(cfg) {
+  const btn = document.getElementById(cfg.btnId);
+  const menu = document.getElementById(cfg.menuId);
 
-stdFilterBtn.innerHTML = menuIcon('chevronDown');
+  btn.innerHTML = menuIcon('chevronDown');
 
-/* 各档的条数按全量 ROWS 算，不跟着搜索关键词变 ——
-   这个数字是用来回答「总共有多少行没填」的，不是当前视图的行数。 */
-function stdFilterCount(key) {
-  const test = stdFilterDef(key).test;
-  return ROWS.filter(test).length;
-}
-
-function renderStdFilterMenu() {
-  let html = STD_FILTERS.map(function (f) {
-    const on = f.key === stdFilter;
-    return '<button type="button" class="th-filter__item" role="menuitemradio"'
-      + ' data-key="' + f.key + '" aria-checked="' + (on ? 'true' : 'false') + '">'
-      + '<span class="th-filter__check">' + (on ? menuIcon('check') : '') + '</span>'
-      + '<span>' + f.label + '</span>'
-      + '<span class="th-filter__count">' + stdFilterCount(f.key) + '</span>'
-      + '</button>';
-  }).join('');
-
-  /* 手动标记存在 localStorage 里、刷新后还在，如果没有一个出口，
-     过几天回来会看不懂「争议项」的数量为什么和代码里写的不一样，
-     也没法回到干净状态。所以有手动标记时在菜单底部给一条清除入口，
-     没有标记时这条不出现，不占位。 */
-  const n = manualMarkCount();
-  if (n > 0) {
-    html += '<button type="button" class="th-filter__reset" role="menuitem" data-reset="1">'
-      + '已手动标记 ' + n + ' 项 · 全部清除</button>';
+  function defOf(key) {
+    return cfg.filters.filter(function (f) { return f.key === key; })[0] || cfg.filters[0];
   }
 
-  stdFilterMenu.innerHTML = html;
-}
-
-/* 菜单是 fixed，位置得自己算：右边缘与按钮右边缘对齐、往下 6px。
-   右对齐是因为这列贴着表格最右侧，左对齐会把菜单甩出视口。
-   算完再夹一次，保证不越过视口边界。
-   用 documentElement.clientWidth 而不是 window.innerWidth —— 后者含纵向滚动条的
-   宽度，按它夹会把菜单塞到滚动条底下去。 */
-function placeStdFilterMenu() {
-  const b = stdFilterBtn.getBoundingClientRect();
-  const vw = document.documentElement.clientWidth;
-  const vh = document.documentElement.clientHeight;
-  const w = stdFilterMenu.offsetWidth;
-  const h = stdFilterMenu.offsetHeight;
-  let left = Math.min(b.right - w, vw - w - 8);
-  left = Math.max(8, left);
-  // 下方放不开就翻到按钮上方
-  let top = b.bottom + 6;
-  if (top + h > vh - 8) top = Math.max(8, b.top - h - 6);
-  stdFilterMenu.style.left = Math.round(left) + 'px';
-  stdFilterMenu.style.top = Math.round(top) + 'px';
-}
-
-function openStdFilter() {
-  renderStdFilterMenu();
-  stdFilterMenu.hidden = false;
-  placeStdFilterMenu();
-  stdFilterBtn.setAttribute('aria-expanded', 'true');
-  // 表头是 sticky、页面两个方向都能滚，菜单得跟着按钮走，否则会飘在原地
-  window.addEventListener('scroll', placeStdFilterMenu, true);
-  window.addEventListener('resize', placeStdFilterMenu);
-}
-
-function closeStdFilter() {
-  stdFilterMenu.hidden = true;
-  stdFilterBtn.setAttribute('aria-expanded', 'false');
-  window.removeEventListener('scroll', placeStdFilterMenu, true);
-  window.removeEventListener('resize', placeStdFilterMenu);
-}
-
-function setStdFilter(key) {
-  stdFilter = key;
-  const def = stdFilterDef(key);
-  stdFilterBtn.setAttribute('data-active', key === 'all' ? 'false' : 'true');
-  const label = '筛选标准版，当前：' + def.label;
-  stdFilterBtn.setAttribute('aria-label', label);
-  stdFilterBtn.title = label;
-  render(searchInput.value);
-}
-
-stdFilterBtn.addEventListener('click', function (e) {
-  e.stopPropagation();
-  if (stdFilterMenu.hidden) openStdFilter(); else closeStdFilter();
-});
-
-stdFilterMenu.addEventListener('click', function (e) {
-  // 先看是不是「清除手动标记」那一条 —— 它不是筛选项，不改当前筛选档
-  const reset = e.target.closest ? e.target.closest('.th-filter__reset') : null;
-  if (reset) {
-    disputeOverrides = {};
-    saveDisputeOverrides();
-    render(searchInput.value);
-    closeStdFilter();
-    stdFilterBtn.focus();
-    return;
+  /* 各档的条数按全量数据算，不跟着搜索关键词变 ——
+     这个数字是用来回答「总共有多少行没填 / 多少行待确认」的，不是当前视图的行数。 */
+  function countOf(key) {
+    return cfg.rows().filter(defOf(key).test).length;
   }
 
-  const item = e.target.closest ? e.target.closest('.th-filter__item') : null;
-  if (!item) return;
-  setStdFilter(item.getAttribute('data-key'));
-  closeStdFilter();
-  stdFilterBtn.focus();
-});
+  function renderMenu() {
+    let html = cfg.filters.map(function (f) {
+      const on = f.key === cfg.getKey();
+      return '<button type="button" class="th-filter__item" role="menuitemradio"'
+        + ' data-key="' + f.key + '" aria-checked="' + (on ? 'true' : 'false') + '">'
+        + '<span class="th-filter__check">' + (on ? menuIcon('check') : '') + '</span>'
+        + '<span>' + f.label + '</span>'
+        + '<span class="th-filter__count">' + countOf(f.key) + '</span>'
+        + '</button>';
+    }).join('');
 
-// 点空白处关闭；Esc 关闭并把焦点还给按钮
-document.addEventListener('click', function (e) {
-  if (stdFilterMenu.hidden) return;
-  if (stdFilterMenu.contains(e.target) || stdFilterBtn.contains(e.target)) return;
-  closeStdFilter();
-});
-document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape' && !stdFilterMenu.hidden) {
-    closeStdFilter();
-    stdFilterBtn.focus();
+    /* 手动标记存在 localStorage 里、刷新后还在，如果没有一个出口，
+       过几天回来会看不懂「新增/待确认」的数量为什么和代码里写的不一样，
+       也没法回到干净状态。所以有手动标记时在菜单底部给一条清除入口，
+       没有标记时这条不出现，不占位。 */
+    const n = cfg.manualCount();
+    if (n > 0) {
+      html += '<button type="button" class="th-filter__reset" role="menuitem" data-reset="1">'
+        + '已手动标记 ' + n + ' 项 · 全部清除</button>';
+    }
+
+    menu.innerHTML = html;
   }
+
+  /* 菜单是 fixed，位置得自己算：右边缘与按钮右边缘对齐、往下 6px。
+     右对齐是因为这列靠着表格右侧，左对齐会把菜单甩出视口。
+     算完再夹一次，保证不越过视口边界。
+     用 documentElement.clientWidth 而不是 window.innerWidth —— 后者含纵向滚动条的
+     宽度，按它夹会把菜单塞到滚动条底下去。 */
+  function place() {
+    const b = btn.getBoundingClientRect();
+    const vw = document.documentElement.clientWidth;
+    const vh = document.documentElement.clientHeight;
+    const w = menu.offsetWidth;
+    const h = menu.offsetHeight;
+    let left = Math.min(b.right - w, vw - w - 8);
+    left = Math.max(8, left);
+    // 下方放不开就翻到按钮上方
+    let top = b.bottom + 6;
+    if (top + h > vh - 8) top = Math.max(8, b.top - h - 6);
+    menu.style.left = Math.round(left) + 'px';
+    menu.style.top = Math.round(top) + 'px';
+  }
+
+  function open() {
+    renderMenu();
+    menu.hidden = false;
+    place();
+    btn.setAttribute('aria-expanded', 'true');
+    // 表头是 sticky、页面两个方向都能滚，菜单得跟着按钮走，否则会飘在原地
+    window.addEventListener('scroll', place, true);
+    window.addEventListener('resize', place);
+  }
+
+  function close() {
+    menu.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    window.removeEventListener('scroll', place, true);
+    window.removeEventListener('resize', place);
+  }
+
+  function setKey(key) {
+    cfg.setKey(key);
+    btn.setAttribute('data-active', key === 'all' ? 'false' : 'true');
+    const label = '筛选标准版，当前：' + defOf(key).label;
+    btn.setAttribute('aria-label', label);
+    btn.title = label;
+    cfg.rerender();
+  }
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (menu.hidden) open(); else close();
+  });
+
+  menu.addEventListener('click', function (e) {
+    // 先看是不是「清除手动标记」那一条 —— 它不是筛选项，不改当前筛选档
+    const reset = e.target.closest ? e.target.closest('.th-filter__reset') : null;
+    if (reset) {
+      cfg.clearManual();
+      cfg.rerender();
+      close();
+      btn.focus();
+      return;
+    }
+
+    const item = e.target.closest ? e.target.closest('.th-filter__item') : null;
+    if (!item) return;
+    setKey(item.getAttribute('data-key'));
+    close();
+    btn.focus();
+  });
+
+  /* 点空白处关闭；Esc 关闭并把焦点还给按钮。
+     两份实例各绑一对，各自只管自己那个菜单 —— 另一份菜单此刻大概率是
+     hidden，第一行就返回了。 */
+  document.addEventListener('click', function (e) {
+    if (menu.hidden) return;
+    if (menu.contains(e.target) || btn.contains(e.target)) return;
+    close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !menu.hidden) {
+      close();
+      btn.focus();
+    }
+  });
+
+  return {
+    setKey: setKey,
+    close: close,
+    isOpen: function () { return !menu.hidden; },
+    /* 争议标记被点亮 / 熄灭之后，菜单如果正开着，「新增/待确认」的计数和
+       「已手动标记」那一行要跟着变 —— 不开着就什么都不用做，下次打开
+       时 open() 里会重渲染。 */
+    refreshIfOpen: function () { if (!menu.hidden) renderMenu(); },
+  };
+}
+
+const modesStdFilterUI = createStdFilterMenu({
+  btnId: 'stdFilterBtn',
+  menuId: 'stdFilterMenu',
+  filters: STD_FILTERS,
+  rows: function () { return ROWS; },
+  getKey: function () { return stdFilter; },
+  setKey: function (k) { stdFilter = k; },
+  manualCount: manualMarkCount,
+  clearManual: function () { disputeOverrides = {}; saveDisputeOverrides(); },
+  rerender: function () { render(searchInput.value); },
 });
 
-setStdFilter('all');
+const liveStdFilterUI = createStdFilterMenu({
+  btnId: 'liveStdFilterBtn',
+  menuId: 'liveStdFilterMenu',
+  filters: LIVE_STD_FILTERS,
+  rows: function () { return LIVE_ROWS; },
+  getKey: function () { return liveStdFilter; },
+  setKey: function (k) { liveStdFilter = k; },
+  manualCount: liveManualMarkCount,
+  clearManual: function () { liveDisputeOverrides = {}; saveLiveDisputeOverrides(); },
+  rerender: function () { renderLiveTable(searchInput.value); },
+});
+
+modesStdFilterUI.setKey('all');
+liveStdFilterUI.setKey('all');
 </script>
 
 </body>
