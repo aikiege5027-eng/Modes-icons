@@ -1,5 +1,7 @@
 # 电梯模式图标 · 各平台应用现状
 
+**在线查看：https://aikiege5027-eng.github.io/Modes-icons/**
+
 一张跨平台对照表，把同一个电梯模式在各个平台上用的图标横向摊开来看，并给出建议的「标准版」图标。
 
 整个页面就是单个 `index.html`，没有构建步骤 —— 数据、样式、逻辑、以及每一处选型理由的注释全部在这一个文件里。用浏览器直接打开就能看。
@@ -38,8 +40,8 @@ open index.html
 
 就这样，不需要装依赖、不需要起服务。
 
-也可以开 GitHub Pages 拿一个链接（Settings → Pages → Source 选 `main` 分支根目录）。
-具体地址以那个页面上显示的为准。
+也可以直接看 GitHub Pages 上的版本（Source 是 `main` 分支根目录）：
+https://aikiege5027-eng.github.io/Modes-icons/
 
 ## 校验脚本
 
