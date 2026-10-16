@@ -8,7 +8,8 @@
 
    ⚠️ 那 6 条里已有 4 条（robot / setting_off / relevel / relevel_slow）被设计在
    IOT Delivery 重画的版本换掉，配方移到文件末尾的 TDESIGN_ARCHIVE（不参与构建）。
-   下面 ICONS 里现役的 TDesign 改造件只剩 pendant / shaft_learning 两条。
+   pendant 后来按要求换成了库内的 user-maintenance（615:1751），配方同样归档。
+   下面 ICONS 里现役的 TDesign 改造件只剩 shaft_learning 一条。
 
    ⚠️ 这些都没过 icon 评审。规范要求「每两周评审一次，设计好的 icon
    放入评审区」，所以它们在页面上带黄点标记，不能当作已入库图标使用。
@@ -42,15 +43,8 @@ export const ICONS = [
   /* setting_off 的配方已移到文件末尾的 TDESIGN_ARCHIVE：
      那一格换成了设计在 IOT Delivery 画的 No-Setting（12007:216438）。 */
 
-  {
-    key: 'pendant',
-    name: 'pendant',
-    zh: '吊坠',
-    targets: ['Pendant'],
-    sources: [{ name: 'calculator', pick: ['stroke1', 'stroke2'] }],
-    fit: { box: 12 },
-    note: '手持操作盒：竖长方盒 + 按键。库内无对应字形；KFPS 徽标用「方框 + 扳手」，但那与已占用的 elevator-maintenance（612:975）同形，会让两行显示同一个图标，所以不取。先试过 gamepad，16px 下两侧握把糊成一团、认不出是手持器，换成 calculator 的盒+键构成。证据最弱的一条，需评审确认。',
-  },
+  /* pendant 的配方已移到文件末尾的 TDESIGN_ARCHIVE：
+     吊坠那一格按要求换成了库内的 user-maintenance（Design Token China 615:1751）。 */
 
   {
     key: 'shaft_learning',
@@ -465,6 +459,17 @@ export const HANDRAIL_CANDIDATES = [
      没有别的文件 import 过它 —— normalize-icon.mjs 只 import { ICONS, SOURCE_LIB }。）
    ============================================================ */
 export const TDESIGN_ARCHIVE = [
+  /* 吊坠：2026-10 按要求换成库内 user-maintenance（615:1751），这条 TDesign calculator 改造件归档 */
+  {
+    key: 'pendant',
+    name: 'pendant',
+    zh: '吊坠',
+    targets: ['Pendant'],
+    sources: [{ name: 'calculator', pick: ['stroke1', 'stroke2'] }],
+    fit: { box: 12 },
+    note: '手持操作盒：竖长方盒 + 按键。库内无对应字形；KFPS 徽标用「方框 + 扳手」，但那与已占用的 elevator-maintenance（612:975）同形，会让两行显示同一个图标，所以不取。先试过 gamepad，16px 下两侧握把糊成一团、认不出是手持器，换成 calculator 的盒+键构成。证据最弱的一条，需评审确认。',
+  },
+
   {
     key: 'robot',
     name: 'robot',

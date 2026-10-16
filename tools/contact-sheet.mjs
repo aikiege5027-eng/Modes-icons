@@ -38,7 +38,8 @@ const GROUPS = [
      这张联络表只收「需要目视复核改造 / 新画结果」的那几个，所以不另立一组。
      relevel_slow 与 relevel 撞形那件事不靠这张表看 —— 两张并排放大在
      tools/out/std-v2/std-compare.png，量化口径在 tools/out/std-v2/pair-check.mjs。 */
-  ['外部引用（TDesign Icons 改造 · 未过评审）', ['pendant', 'shaft_learning']],
+  /* 吊坠（pendant）已换成库内 user-maintenance（615:1751），不再是改造件，从这一组移出 */
+  ['外部引用（TDesign Icons 改造 · 未过评审）', ['shaft_learning']],
   /* 第三组：本项目新画。走同一条 normalize-icon 流水线，所以和上面一组一样
      需要目视复核 —— 尤其这一对要看「上半 / 下半填实」在 16px 下分不分得出来。 */
   ['本项目新画（未入库 · 未过评审）', ['zone_high', 'zone_low']],
