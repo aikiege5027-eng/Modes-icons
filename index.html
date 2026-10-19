@@ -332,6 +332,30 @@ body {
   text-overflow: ellipsis;
 }
 
+/* 标题链接：外观与原来的纯文字标题一致（继承色、无下划线）；
+   在「历史整理汇总」里它是回首页的入口，悬停时变品牌色。 */
+.topnav__home {
+  color: inherit;
+  text-decoration: none;
+}
+.topnav__home:hover { color: var(--brand-color); }
+.topnav__home:focus-visible {
+  outline: 2px solid var(--brand-color);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}
+/* 面包屑第二段：「/ 历史整理汇总」，次要文字色，与标题同字号 */
+.topnav__crumb {
+  color: var(--text-color-secondary);
+  font-weight: 400;
+}
+.topnav__crumb::before {
+  content: '/';
+  margin: 0 8px;
+  color: var(--text-color-placeholder);
+}
+.topnav__crumb[hidden] { display: none; }
+
 /* 右侧操作区：搜索框（32px）+ 主题切换按钮（32px），gap 12px。
    两者都是 comp-size-m，在 56px 的栏内垂直居中，上下各留 12px。
 
@@ -547,6 +571,10 @@ body {
 
 /* 选项卡之间没有 gap：间距完全由 8px 外层 padding + 8px 内层 padding 构成，
    相邻两个标签文字之间因此是 16px。 */
+/* 首页（最终整理版本）不显示页签条；隐藏后 syncStickyOffsets 量到 0，
+   --tabs-bar-height 随之为 0，body 上内边距、sticky 位置都跟着收回去 */
+.tabs[hidden] { display: none; }
+.tab[hidden] { display: none; }
 .tab {
   position: relative;
   display: flex;
@@ -1370,6 +1398,39 @@ td.cell-type { text-align: center; white-space: nowrap; }
 }
 /* 三类上下排。类与类之间 48px —— 外框去掉之后，类之间只剩留白来分组，
    16px 会让上一类最后一行的名字和下一类的标题读成一堆。 */
+/* 页面最底部一行：「历史整理汇总」入口。放在右栏（与图标网格同一列宽对齐），
+   上面一条 component-stroke 分隔线；链接用品牌色 Body 14/Semibold，后跟库内 arrow-right。 */
+.final-footer {
+  grid-column: 2;
+  margin-top: 48px;
+  padding: 24px 0 8px;
+  border-top: 1px solid var(--component-stroke);
+}
+.final-footer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22px;
+  color: var(--text-color-brand);
+  text-decoration: none;
+}
+.final-footer__link:hover { color: var(--brand-color-hover); }
+.final-footer__link:active { color: var(--brand-color-active); }
+.final-footer__link:focus-visible {
+  outline: 2px solid var(--brand-color);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}
+.final-footer__arrow { display: inline-flex; }
+.final-footer__arrow svg { width: 16px; height: 16px; }
+.final-footer__desc {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--text-color-secondary);
+}
 .final-sections {
   display: flex;
   flex-direction: column;
@@ -2664,7 +2725,12 @@ tbody tr:hover .note-btn--add,
 <header class="topnav">
   <div class="topnav__left">
     <img class="topnav__logo" src="assets/kone-logo.svg" alt="KONE" width="72" height="28">
-    <h1 class="topnav__app">电梯相关图标汇总</h1>
+    <!-- 标题兼做「回到首页」：首页（Landing）是最终整理版本；
+         在「历史整理汇总」里时后面跟一段面包屑，点标题回首页。见 JS 的 applyRoute。 -->
+    <h1 class="topnav__app">
+      <a class="topnav__home" id="topnavHome" href="#">电梯相关图标汇总</a><span
+        class="topnav__crumb" id="topnavCrumb" hidden>历史整理汇总</span>
+    </h1>
   </div>
   <!-- 右侧：搜索框 + 主题切换。
        模板原本规定这里是 search / language / notification / user 四个图标按钮，
@@ -2682,9 +2748,11 @@ tbody tr:hover .note-btn--add,
   </div>
 </header>
 
-<div class="tabs" role="tablist" aria-label="图标分类">
+<!-- 页签条只在「历史整理汇总」（#history）里出现，装原来的前三个页签；
+     首页是最终整理版本，不显示页签条。第四个页签按钮留着给 selectTab 用，但始终隐藏。 -->
+<div class="tabs" role="tablist" aria-label="历史整理汇总" id="tabsBar" hidden>
   <button type="button" class="tab" role="tab" id="tab-modes"
-          aria-controls="panel-modes" aria-selected="true">
+          aria-controls="panel-modes" aria-selected="false" tabindex="-1">
     <span class="tab__content">
       <span class="tab__label">模式图标</span>
       <span class="tab-count" id="tabCountModes"></span>
@@ -2705,7 +2773,7 @@ tbody tr:hover .note-btn--add,
     </span>
   </button>
   <button type="button" class="tab" role="tab" id="tab-final"
-          aria-controls="panel-final" aria-selected="false" tabindex="-1">
+          aria-controls="panel-final" aria-selected="true" hidden>
     <span class="tab__content">
       <span class="tab__label">最终整理版本</span>
       <span class="tab-count" id="tabCountFinal">0</span>
@@ -2713,7 +2781,7 @@ tbody tr:hover .note-btn--add,
   </button>
 </div>
 
-<div id="panel-modes" role="tabpanel" aria-labelledby="tab-modes">
+<div id="panel-modes" role="tabpanel" aria-labelledby="tab-modes" hidden>
 <div class="table-card">
   <div class="table-scroll">
     <table>
@@ -3004,7 +3072,7 @@ tbody tr:hover .note-btn--add,
      不是表格，没有平台对照 —— 这一页回答的是「最终要用的就是这些」，
      对照与选型理由留在前三个页签里。
      内容由 renderFinalGrid() 生成，分类、去重与排序规则见 buildFinalSections。 -->
-<div id="panel-final" role="tabpanel" aria-labelledby="tab-final" hidden>
+<div id="panel-final" role="tabpanel" aria-labelledby="tab-final">
   <!-- 左右两栏，参照 KONE Brand Book 的 Guidelines 页：左边是分类导航，右边是图标。
        三类上下排成一长页，滚动时直接跨类别；左边导航跟着当前滚到的那一类高亮
        （scroll-spy），点导航滚到那一类。逻辑见 JS 里的 renderFinalGrid / syncFinalNav。
@@ -3014,6 +3082,13 @@ tbody tr:hover .note-btn--add,
       <ul class="final-nav__list" id="finalNav"></ul>
     </nav>
     <div class="final-sections" id="finalSections"></div>
+    <!-- 页面最底部一行：进入「历史整理汇总」（原来的前三个页签：各平台对照与标准版选型） -->
+    <footer class="final-footer">
+      <a class="final-footer__link" id="historyLink" href="#history">
+        <span>历史整理汇总</span><span class="final-footer__arrow" id="historyLinkArrow" aria-hidden="true"></span>
+      </a>
+      <p class="final-footer__desc">模式图标 / 梯形 / 功能图标 / 其他实时数据图标三张对照表：各平台的原始图标与标准版的选型记录。</p>
+    </footer>
   </div>
 </div>
 
@@ -8779,8 +8854,10 @@ function renderFinalGrid(keyword) {
 let finalNavLock = null;   // 点导航后平滑滚动期间，锁住高亮，免得一路闪过中间的类
 
 function finalSpyLine() {
+  /* 首页不显示页签条（隐藏时 rect 全是 0），判定线退到导航栏下沿 */
   const tabs = document.querySelector('.tabs');
-  return (tabs ? tabs.getBoundingClientRect().bottom : 0) + 16;
+  const bar = tabs && tabs.offsetHeight ? tabs : document.querySelector('.topnav');
+  return (bar ? bar.getBoundingClientRect().bottom : 0) + 16;
 }
 
 function syncFinalNav() {
@@ -8871,7 +8948,8 @@ const TABS = [
   { tab: 'tab-live',     panel: 'panel-live',     render: renderLiveTable },
   { tab: 'tab-final',    panel: 'panel-final',    render: renderFinalGrid },
 ];
-let activeTab = 'tab-modes';
+/* 首页（Landing）就是最终整理版本；前三个页签收进「历史整理汇总」（#history），见 applyRoute */
+let activeTab = 'tab-final';
 
 /* 搜索框、以及任何「当前这张表要重渲染」的场合都走这里。
    ⚠️ 别改回直接调 render()：那只会刷「模式图标」那张表，在另外两个页签上
@@ -8906,22 +8984,77 @@ function selectTab(id) {
   renderActiveTab();
 }
 
-TABS.forEach(function (t, i) {
+/* 「历史整理汇总」里的三个页签（最终整理版本那个按钮始终隐藏，它是首页） */
+const HISTORY_TABS = TABS.filter(function (t) { return t.tab !== 'tab-final'; });
+/* 地址里的页签名：#history/modes | #history/function | #history/live */
+const historyKeyOf = function (tabId) { return tabId.replace(/^tab-/, ''); };
+
+/* 在历史页里切页签：只改地址（replaceState，不进浏览器历史），刷新后还停在这个页签 */
+function selectHistoryTab(id) {
+  selectTab(id);
+  history.replaceState(null, '', '#history/' + historyKeyOf(id));
+}
+
+HISTORY_TABS.forEach(function (t, i) {
   const btn = document.getElementById(t.tab);
-  btn.addEventListener('click', function () { selectTab(t.tab); });
-  // ARIA tablist 的标准键盘行为：左右方向键在选项卡间移动
+  btn.addEventListener('click', function () { selectHistoryTab(t.tab); });
+  // ARIA tablist 的标准键盘行为：左右方向键在（可见的三个）选项卡间移动
   btn.addEventListener('keydown', function (e) {
+    const n = HISTORY_TABS.length;
     let next = null;
-    if (e.key === 'ArrowRight') next = TABS[(i + 1) % TABS.length];
-    else if (e.key === 'ArrowLeft') next = TABS[(i - 1 + TABS.length) % TABS.length];
-    else if (e.key === 'Home') next = TABS[0];
-    else if (e.key === 'End') next = TABS[TABS.length - 1];
+    if (e.key === 'ArrowRight') next = HISTORY_TABS[(i + 1) % n];
+    else if (e.key === 'ArrowLeft') next = HISTORY_TABS[(i - 1 + n) % n];
+    else if (e.key === 'Home') next = HISTORY_TABS[0];
+    else if (e.key === 'End') next = HISTORY_TABS[n - 1];
     if (!next) return;
     e.preventDefault();
-    selectTab(next.tab);
+    selectHistoryTab(next.tab);
     document.getElementById(next.tab).focus();
   });
 });
+
+/* ============================================================
+   两个视图，由地址决定：
+     首页（Landing）  没有 hash / #icon/...（图标详情页叠在首页上）
+                     → 最终整理版本，不显示页签条
+     历史整理汇总     #history 或 #history/<modes|function|live>
+                     → 原来的前三个页签（带页签条），标题后面跟面包屑，点标题回首页
+   首页最底部那一行「历史整理汇总」就是 href="#history" 的普通链接，
+   所以浏览器后退键能从历史页回到首页。
+   ============================================================ */
+const tabsBar = document.getElementById('tabsBar');
+let currentView = null;
+
+function applyRoute() {
+  const m = location.hash.match(/^#history(?:\/(\w+))?$/);
+  const view = m ? 'history' : 'landing';
+  const changed = currentView !== null && view !== currentView;   // 首次加载不算「换视图」
+  currentView = view;
+  document.documentElement.setAttribute('data-view', view);
+  tabsBar.hidden = view !== 'history';
+  document.getElementById('topnavCrumb').hidden = view !== 'history';
+  if (view === 'history') {
+    const want = m[1] && HISTORY_TABS.filter(function (t) { return historyKeyOf(t.tab) === m[1]; })[0];
+    const keep = HISTORY_TABS.filter(function (t) { return t.tab === activeTab; })[0];
+    const target = want || keep || HISTORY_TABS[0];
+    if (target.tab !== activeTab) selectTab(target.tab);
+  } else if (activeTab !== 'tab-final') {
+    selectTab('tab-final');
+  }
+  syncStickyOffsets();               // 页签条出现 / 消失，顶部让位的高度跟着变
+  if (changed) window.scrollTo(0, 0);   // 换视图从顶部看起
+}
+window.addEventListener('hashchange', applyRoute);
+
+/* 标题：回首页。已在首页时只滚回顶部（href="#" 会把地址改成带空 # 的，这里改用 replaceState 去掉） */
+document.getElementById('topnavHome').addEventListener('click', function (e) {
+  e.preventDefault();
+  if (currentView === 'history') location.hash = '';
+  else window.scrollTo(0, 0);
+  if (location.hash === '' || location.hash === '#') history.replaceState(null, '', location.pathname + location.search);
+});
+document.getElementById('historyLinkArrow').innerHTML =
+  '<svg viewBox="' + LIVE_STD_ICONS.arrowRight.vb + '" fill="none">' + LIVE_STD_ICONS.arrowRight.svg + '</svg>';
 
 render('');
 
@@ -9331,7 +9464,7 @@ function stepIconDetail(delta) {
 function syncDetailWithHash() {
   const it = itemFromHash();
   if (it) {
-    if (activeTab !== 'tab-final') selectTab('tab-final');
+    applyRoute();   // #icon/... 属于首页：从历史页带着详情链接进来也先切回首页
     showIconDetail(it);
   } else {
     hideIconDetail();
@@ -9421,6 +9554,8 @@ iconDetail.addEventListener('keydown', function (e) {
 });
 
 // 带着 #icon/... 打开页面：直接进详情（此时没有可后退的，detailPushed 保持 false）
+// 打开页面时按地址定视图（默认首页 = 最终整理版本；#history 进历史整理汇总）
+applyRoute();
 syncDetailWithHash();
 
 /* 主题切换。

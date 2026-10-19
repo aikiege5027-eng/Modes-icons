@@ -26,7 +26,7 @@ const dom = new JSDOM(html, {
   runScripts: 'dangerously',
   virtualConsole: vc,
   pretendToBeVisual: true,
-  url: 'http://localhost/',
+  url: 'http://localhost/#history'   /* 前三个页签收进了「历史整理汇总」，首页是最终整理版本 */,
 });
 const { document } = dom.window;
 
@@ -355,7 +355,7 @@ document.getElementById('stdFilterBtn')
   const errs = [];
   const v2 = new VirtualConsole();
   v2.on('jsdomError', (e) => errs.push(e.message));
-  const noStore = new JSDOM(html, { runScripts: 'dangerously', virtualConsole: v2, pretendToBeVisual: true });
+  const noStore = new JSDOM(html, { runScripts: 'dangerously', virtualConsole: v2, pretendToBeVisual: true, url: 'about:blank#history' });
   const doc2 = noStore.window.document;
   const rows2 = doc2.querySelectorAll('#tbody tr').length;
   const dots2 = doc2.querySelectorAll('#tbody .dispute-dot').length;
@@ -757,7 +757,7 @@ okN(unmarked.length === 0,
     runScripts: 'dangerously',
     virtualConsole: v4,
     pretendToBeVisual: true,
-    url: 'http://localhost/',
+    url: 'http://localhost/#history'   /* 前三个页签收进了「历史整理汇总」，首页是最终整理版本 */,
     beforeParse(w) {
       w.localStorage.setItem('modes-icons.notes.v1', JSON.stringify(raw));
     },
@@ -948,7 +948,7 @@ console.log('\n搜索范围');
   const errs = [];
   v3.on('jsdomError', (e) => errs.push(e.message));
   const d3 = new JSDOM(html, {
-    runScripts: 'dangerously', virtualConsole: v3, pretendToBeVisual: true, url: 'http://localhost/',
+    runScripts: 'dangerously', virtualConsole: v3, pretendToBeVisual: true, url: 'http://localhost/#history'   /* 前三个页签收进了「历史整理汇总」，首页是最终整理版本 */,
   });
   const doc = d3.window.document;
   const input = doc.getElementById('searchInput');
@@ -1197,7 +1197,7 @@ console.log('\n标准版图标放大预览');
   const errs = [];
   v4.on('jsdomError', (e) => errs.push(e.message));
   const d4 = new JSDOM(html, {
-    runScripts: 'dangerously', virtualConsole: v4, pretendToBeVisual: true, url: 'http://localhost/',
+    runScripts: 'dangerously', virtualConsole: v4, pretendToBeVisual: true, url: 'http://localhost/#history'   /* 前三个页签收进了「历史整理汇总」，首页是最终整理版本 */,
   });
   const doc = d4.window.document;
   const pvFail = [];
@@ -1319,7 +1319,7 @@ console.log('\n实时数据表的标准版筛选与争议标记');
   const errs = [];
   v5.on('jsdomError', (e) => errs.push(e.message));
   const d5 = new JSDOM(html, {
-    runScripts: 'dangerously', virtualConsole: v5, pretendToBeVisual: true, url: 'http://localhost/',
+    runScripts: 'dangerously', virtualConsole: v5, pretendToBeVisual: true, url: 'http://localhost/#history'   /* 前三个页签收进了「历史整理汇总」，首页是最终整理版本 */,
   });
   const doc = d5.window.document;
   const lvFail = [];
@@ -1610,10 +1610,11 @@ console.log('\n最终整理版本');
      它会被触发；jsdom 没有 fetch，换成一个永不返回的空实现。 */
   d6.window.fetch = () => new Promise(() => {});
 
-  /* scroll-spy：jsdom 没有排版，手动给三个 section 和页签条造位置，再派发 scroll。
-     判定线 = 页签条底边 + 16（这里页签条底边造成 121，线在 137）。 */
+  /* scroll-spy：jsdom 没有排版，手动给三个 section 和导航栏造位置，再派发 scroll。
+     首页（最终整理版本）不显示页签条，判定线 = 导航栏底边 + 16（这里导航栏底边造成 56，线在 72）。 */
   const fakeRect = (el, top) => { el.getBoundingClientRect = () => ({ top, bottom: top + 500, left: 0, right: 0, width: 0, height: 500 }); };
-  doc.querySelector('.tabs').getBoundingClientRect = () => ({ top: 56, bottom: 121, left: 0, right: 0, width: 0, height: 65 });
+  okF(doc.getElementById('tabsBar').hidden, '首页（最终整理版本）不该显示页签条');
+  doc.querySelector('.topnav').getBoundingClientRect = () => ({ top: 0, bottom: 56, left: 0, right: 0, width: 0, height: 56 });
   const spyAt = async (tops) => {
     CATS.forEach(([k], i) => fakeRect(secOf(k), tops[i]));
     d6.window.dispatchEvent(new d6.window.Event('scroll'));
@@ -1621,9 +1622,9 @@ console.log('\n最终整理版本');
     return currentNav();
   };
   const spyCases = [
-    ['页面顶部', [137, 1900, 2500], 'modes'],
-    ['电梯类型的标题刚越过判定线', [-1700, 130, 600], 'lift'],
-    ['实时数据的标题压在判定线上', [-2300, -600, 137], 'live'],
+    ['页面顶部', [72, 1900, 2500], 'modes'],
+    ['电梯类型的标题刚越过判定线', [-1700, 65, 600], 'lift'],
+    ['实时数据的标题压在判定线上', [-2300, -600, 72], 'live'],
     ['滚回电梯模式中段', [-400, 1400, 2000], 'modes'],
   ];
   for (const [label, tops, wantKey] of spyCases) {
@@ -1640,7 +1641,7 @@ console.log('\n最终整理版本');
   okF(scrolled.length === 1 && scrolled[0][0] === 'live' && scrolled[0][1] === 'smooth', '点导航应平滑滚到那一类');
   okF(currentNav() === 'live', '点导航后当前项应立即换成那一类（不等滚动结束）');
   // 滚动期间锁住高亮：判定线上还是电梯模式，也不该闪回去
-  CATS.forEach(([k], i) => fakeRect(secOf(k), [137, 1900, 2500][i]));
+  CATS.forEach(([k], i) => fakeRect(secOf(k), [72, 1900, 2500][i]));
   d6.window.dispatchEvent(new d6.window.Event('scroll'));
   await tick();
   okF(currentNav() === 'live', '平滑滚动期间高亮应锁在点的那一类，不随中间位置闪动');
@@ -2063,10 +2064,45 @@ console.log('\n最终整理版本');
   type('Design Token China');
   okF(allItems().length === 0, '来源只在 tooltip 里，不该进搜索范围');
   type('layers');
-  doc.getElementById('tab-live').click();
-  doc.getElementById('tab-final').click();
-  console.log(`  跨页签保留关键词      「${input.value}」→ ${allItems().length} 个`);
-  okF(input.value === 'layers' && allItems().length > 0, '切页签应保留关键词并按它重渲染');
+  /* 最终整理版本是首页，前三个页签在「历史整理汇总」（#history）里：
+     跨视图走一圈（首页 → 历史页的实时数据 → 首页），关键词保留并按它重渲染 */
+  d6.window.scrollTo = () => {};   // jsdom 没实现 scrollTo（换视图时会滚回顶部）
+  d6.window.history.replaceState(null, '', '#history/live');
+  d6.window.eval('applyRoute()');
+  const histLiveShown = !doc.getElementById('panel-live').hidden && !doc.getElementById('tabsBar').hidden;
+  d6.window.history.replaceState(null, '', '/');
+  d6.window.eval('applyRoute()');
+  console.log(`  跨视图保留关键词      「${input.value}」→ ${allItems().length} 个（中途历史页的实时数据${histLiveShown ? '已显示' : '没显示'}）`);
+  okF(histLiveShown, '#history/live 应进历史整理汇总并显示实时数据那个页签');
+  // 首页 / 历史整理汇总 两个视图（applyRoute）
+  {
+    const $d = (id) => doc.getElementById(id);
+    const histLink = $d('historyLink');
+    console.log(`  首页                  页签条${$d('tabsBar').hidden ? '隐藏' : '显示'} · 面包屑${$d('topnavCrumb').hidden ? '隐藏' : '显示'}`
+      + ` · 最底部「${histLink?.textContent.trim()}」→ ${histLink?.getAttribute('href')}`);
+    okF(!$d('panel-final').hidden && $d('tabsBar').hidden && $d('topnavCrumb').hidden, '首页应直接是最终整理版本，不显示页签条和面包屑');
+    okF(histLink && histLink.getAttribute('href') === '#history' && histLink.textContent.trim() === '历史整理汇总',
+      '最终整理版本最底部应有「历史整理汇总」链接，指向 #history');
+    okF(histLink.closest('#panel-final') && histLink.closest('.final-layout').lastElementChild === histLink.closest('.final-footer'),
+      '「历史整理汇总」应在最终整理版本的最底部');
+    okF(!!histLink.querySelector('svg path[fill="currentColor"]'), '链接后的箭头应是内联的库内 arrow-right（currentColor）');
+    d6.window.history.replaceState(null, '', '#history');
+    d6.window.eval('applyRoute()');
+    const visibleTabs = [...doc.querySelectorAll('#tabsBar .tab')].filter((b) => !b.hidden).map((b) => b.id);
+    console.log(`  #history              可见页签 ${visibleTabs.join(' / ')} · 当前 ${d6.window.eval('activeTab')} · 面包屑「${$d('topnavCrumb').textContent}」`);
+    okF(!$d('tabsBar').hidden && JSON.stringify(visibleTabs) === '["tab-modes","tab-function","tab-live"]',
+      '历史整理汇总应只显示原来的前三个页签');
+    okF(['tab-modes', 'tab-function', 'tab-live'].includes(d6.window.eval('activeTab')) && $d('panel-final').hidden,
+      '历史整理汇总里不该显示最终整理版本');
+    okF(!$d('topnavCrumb').hidden, '历史整理汇总里标题后应跟面包屑');
+    $d('tab-function').click();
+    okF(d6.window.location.hash === '#history/function' && !$d('panel-function').hidden, '历史页里切页签应更新地址 #history/function');
+    $d('topnavHome').click();
+    okF(d6.window.location.hash === '', '点标题应回首页（地址不带 hash）');
+    d6.window.eval('applyRoute()');   // jsdom 里 location.hash = '' 的 hashchange 是异步的，这里直接同步一次
+    okF(!$d('panel-final').hidden && $d('tabsBar').hidden, '回首页后应是最终整理版本、不显示页签条');
+  }
+  okF(input.value === 'layers' && allItems().length > 0, '切视图应保留关键词并按它重渲染');
   type('');
   okF(CATS.every(([k]) => navCount(k) === String(want[k].size) && !navOf(k).disabled), '清空关键词后导航计数应恢复成各类总数、全部可点');
   okF(sections().length === 3 && allItems().length === wantTotal, '清空关键词应恢复三类全量');

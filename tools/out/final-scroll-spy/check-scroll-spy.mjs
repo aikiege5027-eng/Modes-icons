@@ -25,10 +25,10 @@ cpSync(ROOT + 'assets', WORK + '/assets', { recursive: true });
 const harness = `
 <script>
 window.addEventListener('load', function () {
-  document.getElementById('tab-final').click();
+  // 首页就是最终整理版本（不再需要点页签），页签条在首页隐藏
   const cur = function () { const b = document.querySelector('#finalNav [aria-current="true"]'); return b ? b.dataset.cat : null; };
   const topOf = function (k) { return Math.round(document.querySelector('[data-section="' + k + '"]').getBoundingClientRect().top); };
-  const line = function () { return Math.round(document.querySelector('.tabs').getBoundingClientRect().bottom + 16); };
+  const line = function () { const t = document.querySelector('.tabs'); const bar = t && t.offsetHeight ? t : document.querySelector('.topnav'); return Math.round(bar.getBoundingClientRect().bottom + 16); };
   const wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
   const log = [];
   (async function () {

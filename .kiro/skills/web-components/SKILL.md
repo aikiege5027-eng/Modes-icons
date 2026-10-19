@@ -20,7 +20,7 @@ description: KONE China Web 端组件规范库（基于 TDesign Vue Next + China
 |---|---|---|
 | Tabs 选项卡 | 默认主题 / 卡片主题，top / left 两种位置，medium / large 两种尺寸，支持图标、增减、滑动 | `references/tabs.md` |
 | Button 按钮 | base / outline / dash / text / ghost 五类型 × default / primary / Secondary / danger 主题 × small / medium / large × 4 形状 | `references/button.md` |
-| Search 搜索 | 带搜索按钮的输入框，含无边框、一键清空、批量搜索、联想 / 历史面板；附 item/searchBox、item/searchPopup 子组件 | `references/search.md` |
+| Search 搜索 | 带搜索按钮的输入框，含无边框、一键清空、批量搜索（多行 / 标签）、联想 / 自定义展开 / 历史面板；附 item/searchBox、item/searchPopup 子组件、变体覆盖范围与 10 条设计稿不一致 | `references/search.md` |
 | Table 表格 | 行模式 / 列模式两套组件集，small / medium / large 三档行高（36/46/54），边框、斑马纹、展开行、行选中、固定表头、列固定、排序、筛选 | `references/table.md` |
 
 <!-- 后续新增组件在此追加一行，并在 references/ 下新增同名文档 -->
