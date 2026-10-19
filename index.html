@@ -99,6 +99,7 @@
      后者是表头筛选按钮的 20px 热区，之前都在用一个不存在的变量。 */
   --comp-size-xxxs: 16px;
   --comp-size-xxs: 20px;
+  --comp-size-xs: 24px;               /* 最终整理版本类标题右边的筛选按钮 */
   --comp-size-m: 32px;
   --comp-size-l: 36px;               /* 图标详情页的下载按钮 */
   --comp-size-xl: 40px;
@@ -1530,6 +1531,51 @@ td.cell-type { text-align: center; white-space: nowrap; }
   line-height: 24px;
   color: var(--text-color-primary);
 }
+/* 类标题行：左边标题 + 计数，右边「全部 / 新增」筛选（文字 + chevron-down）。
+   标题原来的 16px 下边距挪到这一行上。 */
+.final-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 16px;
+}
+.final-section__head .final-section__title { margin: 0; }
+/* 筛选触发器：Body 14/Regular 次要文字色 + 16px chevron-down（库内 612:913）。
+   高 24px、左右 4px 内边距、2px 圆角，悬停出 bg-color-secondarycontainer 底色 ——
+   与 Search 组件里的搜索按钮（item/searchBox）同一套尺寸。
+   选了「新增」时文字与图标变品牌色，一眼看出这一类被筛过；
+   chevron 默认朝下，菜单展开时转 180° 朝上。 */
+.final-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: var(--comp-size-xs);
+  padding: 0 4px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--text-color-secondary);
+  background: none;
+  border: none;
+  border-radius: var(--radius-small);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.final-filter:hover { color: var(--text-color-primary); background: var(--bg-color-secondarycontainer); }
+.final-filter:focus-visible { outline: 2px solid var(--brand-color); outline-offset: 1px; }
+.final-filter[data-active="true"] { color: var(--brand-color); }
+.final-filter svg { display: block; width: 16px; height: 16px; transition: transform 0.15s; }
+.final-filter[aria-expanded="true"] svg { transform: rotate(180deg); }
+/* 筛选后这一类一个都没有（如 电梯类型、状态 全是库内图标）：留着标题与筛选，下面一行说明 */
+.final-section__empty {
+  margin: 0;
+  padding: 24px 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--text-color-placeholder);
+}
 /* 「电梯类型、状态」里的梯型小组（直梯 / 扶梯 / 步道梯）。
    小标题比类标题低一档：Body 14/Semibold、次要文字色，计数沿用类标题那一套。
    组与组之间 24px —— 比格间距 16 大一档，看得出是另一组；
@@ -2848,6 +2894,9 @@ tbody tr:hover .note-btn--add,
      各挂一份放大图没有必要 —— 鼠标一次只能停在一个格子上。
      aria-hidden：这是纯视觉放大，内容在格子里已经有了（图标名 + title），
      不往无障碍树里再塞一份。 -->
+<!-- 最终整理版本各类标题右边的「全部 / 新增」筛选，三类共用这一个菜单（fixed，跟着点开的那个按钮定位）。
+     样式沿用表头筛选的 .th-filter__menu。逻辑见 JS 的「最终整理版本 · 类内筛选」。 -->
+<div class="th-filter__menu" id="finalFilterMenu" role="menu" aria-label="筛选" hidden></div>
 <div class="icon-preview" id="iconPreview" aria-hidden="true" hidden>
   <span class="icon-preview__stage" id="iconPreviewStage"></span>
 </div>
@@ -8767,6 +8816,40 @@ function finalHit(sec, it, kw) {
   return hay.toLowerCase().indexOf(kw) !== -1;
 }
 
+/* ---- 最终整理版本 · 类内筛选（各类标题右边的「全部 / 新增」）----
+   新增 = 图标不是 Design Token China 库里现成的（src 不是库）：设计在 IOT Delivery 新画的、
+   本项目按规范新画的、TDesign 改造件。目前 电梯模式 8 个、实时数据 1 个（平层感应）、
+   电梯类型、状态 0 个。图标入库后 src 改回库，就自动不算新增了。
+   三类各自独立筛，互不影响；和搜索叠加（先搜、再筛）。
+   条数按全量算，不跟搜索变（与表头筛选同一口径）。 */
+const FINAL_FILTERS = [
+  { key: 'all', label: '全部', test: function () { return true; } },
+  { key: 'new', label: '新增', test: function (it) { return it.src !== 'Design Token China'; } },
+];
+const finalFilter = {};   // 类 key → 筛选 key，没设就是 all
+function finalFilterDef(secKey) {
+  const k = finalFilter[secKey] || 'all';
+  return FINAL_FILTERS.filter(function (f) { return f.key === k; })[0] || FINAL_FILTERS[0];
+}
+/* 网格显示、导航计数、详情页翻页三处共用：搜得到、且过了这一类的筛选 */
+function finalVisible(sec, it, kw) {
+  return finalHit(sec, it, kw) && finalFilterDef(sec.key).test(it);
+}
+/* chevron-down · 库内 612:913（与表头筛选的 MENU_ICONS.chevronDown 同一条 path）。
+   按要求默认朝下、菜单展开时朝上（CSS 转 180°）。
+   path 是紧包围盒坐标，按 get_metadata 的摆放（Union x 2.7817 / y 5.3008）平移进 16 画框。
+   之前用过 chevron-right（612:918）朝右、展开转 90°，已换掉。 */
+const FINAL_FILTER_CHEVRON = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">'
+  + '<path transform="translate(2.781745 5.300787)"' + MENU_ICONS.chevronDown.svg.replace(/^<path/, '') + '</svg>';
+function finalFilterBtnHtml(sec) {
+  const f = finalFilterDef(sec.key);
+  return '<button type="button" class="final-filter" data-filter-sec="' + sec.key + '"'
+    + ' aria-haspopup="menu" aria-expanded="false" aria-controls="finalFilterMenu"'
+    + ' data-active="' + (f.key === 'all' ? 'false' : 'true') + '"'
+    + ' aria-label="筛选' + esc(sec.title) + '，当前：' + f.label + '">'
+    + '<span>' + f.label + '</span>' + FINAL_FILTER_CHEVRON + '</button>';
+}
+
 /* 「电梯类型、状态」按梯型再分三个小组：直梯 / 扶梯 / 步道梯（顺序同梯形表的 LIFT_ORDER）；
    「实时数据」同样按梯型分 直梯 / 扶梯 两组（见 FINAL_GROUP_ORDER）。
    每组一个小标题 + 一张网格，组内仍按字母序（buildFinalSections 里已排好，这里只是按梯型分桶）。
@@ -8807,44 +8890,139 @@ function renderFinalGrid(keyword) {
   // 页签计数始终是总数，不跟着搜索走（口径同另外三个页签）
   document.getElementById('tabCountFinal').textContent = FINAL_TOTAL;
 
+  /* found = 搜得到的；hits = 再过了这一类的筛选、真正显示的。
+     类是否整块收起只看 found：筛成 0 时标题与筛选还要留着，不然切不回「全部」。 */
   const stats = FINAL_SECTIONS.map(function (sec) {
-    return { sec: sec, hits: sec.items.filter(function (it) { return finalHit(sec, it, kw); }) };
+    const found = sec.items.filter(function (it) { return finalHit(sec, it, kw); });
+    const filtered = finalFilterDef(sec.key).key !== 'all';
+    return { sec: sec, found: found, filtered: filtered,
+      hits: found.filter(function (it) { return finalFilterDef(sec.key).test(it); }) };
   });
-
   /* 右侧：三类上下排成一长页。搜索时没有命中的类整块收起；三类都没命中给一个空状态。 */
   const html = stats.map(function (st) {
-    if (!st.hits.length) return '';
+    if (!st.found.length) return '';
     const sec = st.sec;
     const titleId = 'finalSection-' + sec.key;
-    const count = kw ? st.hits.length + ' / ' + sec.items.length : String(sec.items.length);
-    return '<section class="final-card final-section" data-section="' + sec.key + '" aria-labelledby="' + titleId + '">'
-      + '<h2 class="final-section__title" id="' + titleId + '">'
-        + '<span>' + esc(sec.title) + '</span>'
-        + '<span class="final-section__count">' + count + '</span>'
-      + '</h2>'
-      + (FINAL_GROUP_ORDER[sec.key]
-        ? finalLiftGroupsHtml(sec, st.hits, kw)
+    const narrowed = !!kw || st.filtered;
+    const count = narrowed ? st.hits.length + ' / ' + sec.items.length : String(sec.items.length);
+    const body = !st.hits.length
+      ? '<p class="final-section__empty">' + (kw ? '没有匹配关键词的' : '这一类暂无') + finalFilterDef(sec.key).label + '图标</p>'
+      : FINAL_GROUP_ORDER[sec.key]
+        ? finalLiftGroupsHtml(sec, st.hits, narrowed)
         : '<ul class="final-grid' + (sec.key === 'modes' ? ' final-grid--detail' : '') + '">'
           + st.hits.map(function (it) { return finalItemHtml(sec, it); }).join('')
-          + '</ul>')
+          + '</ul>';
+    return '<section class="final-card final-section" data-section="' + sec.key + '" aria-labelledby="' + titleId + '">'
+      + '<div class="final-section__head">'
+        + '<h2 class="final-section__title" id="' + titleId + '">'
+          + '<span>' + esc(sec.title) + '</span>'
+          + '<span class="final-section__count">' + count + '</span>'
+        + '</h2>'
+        + finalFilterBtnHtml(sec)
+      + '</div>'
+      + body
       + '</section>';
   }).join('');
   document.getElementById('finalSections').innerHTML = html
     || '<div class="final-card"><p class="final-empty">没有匹配关键词「' + esc(raw) + '」的图标</p></div>';
-
-  /* 左侧导航：三类 + 计数。搜索时计数写命中数；命中 0 的类在右边已经收起了，
+  /* 左侧导航：三类 + 计数。搜索 / 筛选时计数写实际显示的个数；整类收起的（搜索没命中）
      导航项禁用（点了没有地方可滚）、计数调淡。 */
   document.getElementById('finalNav').innerHTML = stats.map(function (st) {
-    const empty = kw && !st.hits.length;
-    const count = kw ? st.hits.length : st.sec.items.length;
+    const gone = !st.found.length;
+    const narrowed = !!kw || st.filtered;
+    const count = narrowed ? st.hits.length : st.sec.items.length;
     return '<li><button type="button" class="final-nav__item" data-cat="' + st.sec.key + '"'
-      + (empty ? ' disabled' : '') + '>'
+      + (gone ? ' disabled' : '') + '>'
       + '<span>' + esc(st.sec.title) + '</span>'
-      + '<span class="final-nav__count' + (empty ? ' final-nav__count--zero' : '') + '">' + count + '</span>'
+      + '<span class="final-nav__count' + (narrowed && !st.hits.length ? ' final-nav__count--zero' : '') + '">' + count + '</span>'
       + '</button></li>';
   }).join('');
   syncFinalNav();
 }
+
+/* 类内筛选的菜单：三个触发按钮共用 #finalFilterMenu。
+   点按钮开 / 关；点选项后重渲染网格（按钮会被重建），焦点还给新的那个按钮。
+   点菜单外、按 Esc、滚动页面都会收起（菜单是 fixed，滚动时不跟着找按钮，收起更简单）。 */
+const finalFilterMenu = document.getElementById('finalFilterMenu');
+let finalFilterOpenSec = null;
+function finalFilterBtn(secKey) {
+  return document.querySelector('#finalSections .final-filter[data-filter-sec="' + secKey + '"]');
+}
+function closeFinalFilter(refocus) {
+  if (!finalFilterOpenSec) return;
+  const btn = finalFilterBtn(finalFilterOpenSec);
+  finalFilterMenu.hidden = true;
+  if (btn) { btn.setAttribute('aria-expanded', 'false'); if (refocus) btn.focus(); }
+  finalFilterOpenSec = null;
+  window.removeEventListener('scroll', onFinalFilterScroll, true);
+}
+function onFinalFilterScroll(e) {
+  if (e.target === finalFilterMenu || finalFilterMenu.contains(e.target)) return;
+  closeFinalFilter(false);
+}
+function openFinalFilter(btn) {
+  const secKey = btn.getAttribute('data-filter-sec');
+  const sec = FINAL_SECTIONS.filter(function (x) { return x.key === secKey; })[0];
+  const cur = finalFilterDef(secKey).key;
+  finalFilterMenu.innerHTML = FINAL_FILTERS.map(function (f) {
+    const on = f.key === cur;
+    return '<button type="button" class="th-filter__item" role="menuitemradio" data-key="' + f.key + '"'
+      + ' aria-checked="' + (on ? 'true' : 'false') + '">'
+      + '<span class="th-filter__check">' + (on ? menuIcon('check') : '') + '</span>'
+      + '<span>' + f.label + '</span>'
+      + '<span class="th-filter__count">' + sec.items.filter(f.test).length + '</span>'
+      + '</button>';
+  }).join('');
+  finalFilterMenu.setAttribute('aria-label', '筛选' + sec.title);
+  finalFilterMenu.hidden = false;
+  // 右边缘对齐按钮、往下 6px；放不下翻到上方；左右夹在视口内
+  const b = btn.getBoundingClientRect();
+  const vw = document.documentElement.clientWidth;
+  const vh = document.documentElement.clientHeight;
+  const w = finalFilterMenu.offsetWidth;
+  const h = finalFilterMenu.offsetHeight;
+  const left = Math.max(8, Math.min(b.right - w, vw - w - 8));
+  let top = b.bottom + 6;
+  if (top + h > vh - 8) top = Math.max(8, b.top - h - 6);
+  finalFilterMenu.style.left = Math.round(left) + 'px';
+  finalFilterMenu.style.top = Math.round(top) + 'px';
+  btn.setAttribute('aria-expanded', 'true');
+  finalFilterOpenSec = secKey;
+  window.addEventListener('scroll', onFinalFilterScroll, true);
+  const checked = finalFilterMenu.querySelector('[aria-checked="true"]');
+  if (checked) checked.focus();
+}
+document.getElementById('finalSections').addEventListener('click', function (e) {
+  const btn = e.target.closest ? e.target.closest('.final-filter') : null;
+  if (!btn) return;
+  e.stopPropagation();
+  const secKey = btn.getAttribute('data-filter-sec');
+  if (finalFilterOpenSec === secKey) { closeFinalFilter(true); return; }
+  closeFinalFilter(false);
+  openFinalFilter(btn);
+});
+finalFilterMenu.addEventListener('click', function (e) {
+  const item = e.target.closest ? e.target.closest('[data-key]') : null;
+  if (!item || !finalFilterOpenSec) return;
+  e.stopPropagation();
+  const secKey = finalFilterOpenSec;
+  closeFinalFilter(false);
+  finalFilter[secKey] = item.getAttribute('data-key');
+  renderActiveTab();
+  const btn = finalFilterBtn(secKey);
+  if (btn) btn.focus();
+});
+finalFilterMenu.addEventListener('keydown', function (e) {
+  const items = [...finalFilterMenu.querySelectorAll('[data-key]')];
+  const i = items.indexOf(document.activeElement);
+  if (e.key === 'Escape') { e.preventDefault(); closeFinalFilter(true); }
+  else if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+  else if (e.key === 'Tab') closeFinalFilter(false);
+});
+document.addEventListener('click', function (e) {
+  if (finalFilterOpenSec && !finalFilterMenu.contains(e.target)) closeFinalFilter(false);
+});
 
 /* ---- scroll-spy：滚到哪一类，导航就亮哪一类 ----
    判定线 = 页签条底边再往下 16px（与左导航 sticky 的 top、类标题的 scroll-margin-top 同一条线）：
@@ -9218,7 +9396,7 @@ function detailList(it) {
     }, []);
   }
   const kw = searchInput.value.trim().toLowerCase();
-  const hits = all.filter(function (x) { return finalHit(sec, x, kw); });
+  const hits = all.filter(function (x) { return finalVisible(sec, x, kw); });   // 跟网格一致：搜索 + 类内筛选
   return hits.indexOf(it) !== -1 ? hits : all;
 }
 

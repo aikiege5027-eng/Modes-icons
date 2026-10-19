@@ -2074,6 +2074,58 @@ console.log('\n最终整理版本');
   d6.window.eval('applyRoute()');
   console.log(`  跨视图保留关键词      「${input.value}」→ ${allItems().length} 个（中途历史页的实时数据${histLiveShown ? '已显示' : '没显示'}）`);
   okF(histLiveShown, '#history/live 应进历史整理汇总并显示实时数据那个页签');
+  // 各类标题右边的「全部 / 新增」筛选（新增 = 图标不是 Design Token China 库里现成的）
+  {
+    type('');
+    const fbtn = (k) => secOf(k)?.querySelector('.final-section__head > .final-filter');
+    const menuEl = doc.getElementById('finalFilterMenu');
+    const nowLabel = (k) => fbtn(k)?.querySelector('span').textContent;
+    okF(CATS.every(([k]) => fbtn(k) && nowLabel(k) === '全部' && fbtn(k).getAttribute('data-active') === 'false'),
+      '三类标题右边都应有筛选，默认「全部」');
+    okF(CATS.every(([k]) => fbtn(k).querySelector('svg path[fill="currentColor"]')?.getAttribute('d') === E('MENU_ICONS').chevronDown.svg.match(/ d="([^"]+)"/)[1]),
+      '筛选文字后应跟库内 chevron-down（currentColor）');
+    okF(/\.final-filter\[aria-expanded="true"\] svg \{ transform: rotate\(180deg\); \}/.test(html), '菜单展开时 chevron 应转 180° 朝上');
+    const wantNew = Object.fromEntries(CATS.map(([k]) => [k, E('FINAL_SECTIONS').find((x) => x.key === k).items.filter((it) => it.src !== 'Design Token China').length]));
+    fbtn('modes').click();
+    const opts = [...menuEl.querySelectorAll('[data-key]')].map((b) => b.textContent);
+    console.log(`  类内筛选              菜单 ${opts.join(' / ')} · 新增个数 ${JSON.stringify(wantNew)}`);
+    okF(!menuEl.hidden && fbtn('modes').getAttribute('aria-expanded') === 'true', '点筛选应展开菜单');
+    okF(JSON.stringify([...menuEl.querySelectorAll('[data-key]')].map((b) => b.dataset.key)) === '["all","new"]', '菜单应只有 全部 / 新增 两项');
+    menuEl.querySelector('[data-key="new"]').click();
+    const modesNew = itemsOf(secOf('modes')).map(iconOf);
+    console.log(`  电梯模式 选「新增」    ${modesNew.length} 格：${modesNew.join(', ')} · 标题计数 ${countText(secOf('modes'))} · 导航 ${navCount('modes')}`);
+    okF(menuEl.hidden && nowLabel('modes') === '新增' && fbtn('modes').getAttribute('data-active') === 'true', '选「新增」后菜单收起、按钮显示「新增」并标为激活');
+    okF(modesNew.length === wantNew.modes && wantNew.modes > 0, `电梯模式「新增」应只剩 ${wantNew.modes} 格（非库内图标）`);
+    okF(countText(secOf('modes')) === `${wantNew.modes} / 62` && navCount('modes') === String(wantNew.modes), '筛选后标题计数写「显示 / 总数」，导航计数写显示数');
+    okF(itemsOf(secOf('live')).length === 29 && nowLabel('live') === '全部', '各类筛选互相独立：实时数据不受影响');
+    // 电梯类型、状态 没有新增：选了之后标题和筛选仍在、给一行说明，能切回全部
+    fbtn('lift').click();
+    menuEl.querySelector('[data-key="new"]').click();
+    const liftEmpty = secOf('lift')?.querySelector('.final-section__empty')?.textContent;
+    console.log(`  电梯类型 选「新增」    ${itemsOf(secOf('lift')).length} 格 · 说明「${liftEmpty}」`);
+    okF(wantNew.lift === 0 && !!secOf('lift') && !!fbtn('lift') && liftEmpty === '这一类暂无新增图标', '筛成 0 格时应保留标题与筛选，并给一行说明');
+    okF(!navOf('lift').disabled, '筛成 0 格的类导航仍可点（它的标题还在页面上）');
+    // 详情页翻页跟着筛选走
+    secOf('modes').querySelector('button.final-item__box').click();
+    await tick();
+    const pos = doc.getElementById('iconDetailPos').textContent;
+    console.log(`  筛选后进详情          位置 ${pos}`);
+    okF(pos === `1 / ${wantNew.modes}`, '详情页的翻页范围应是筛选后的那几格');
+    doc.getElementById('iconDetailBack').click();
+    await tick();
+    // 筛选 + 搜索叠加
+    type('优先');
+    console.log(`  新增 + 搜「优先」      ${itemsOf(secOf('modes')).map(iconOf).join(', ')}`);
+    okF(itemsOf(secOf('modes')).map(iconOf).join() === 'zone-high,zone-low', '筛选与搜索叠加：新增里搜「优先」只剩优先高区 / 低区');
+    type('');
+    // Esc 收起、焦点还给按钮；切回全部
+    fbtn('modes').click();
+    menuEl.dispatchEvent(new d6.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    okF(menuEl.hidden && doc.activeElement === fbtn('modes'), 'Esc 应收起菜单并把焦点还给按钮');
+    for (const k of ['modes', 'lift']) { fbtn(k).click(); menuEl.querySelector('[data-key="all"]').click(); }
+    okF(sections().length === 3 && allItems().length === wantTotal && CATS.every(([k]) => nowLabel(k) === '全部'), '切回「全部」后三类恢复全量');
+    type('layers');   // 还原：后面「切视图应保留关键词」那条断言要用这个关键词
+  }
   // 首页 / 历史整理汇总 两个视图（applyRoute）
   {
     const $d = (id) => doc.getElementById(id);
