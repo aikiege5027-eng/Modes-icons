@@ -10,7 +10,9 @@
    用法：cd tools && node check-page.mjs
    ============================================================ */
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { unzipSync } from 'fflate';
 import { JSDOM, VirtualConsole } from 'jsdom';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
@@ -2543,8 +2545,8 @@ console.log('\n图标详情页');
   console.log(`    场景释义：${lfNote.join(' / ')}`);
   okT(!dialog.hidden && /^#icon\/lift/.test(decodeURIComponent(w.location.hash)), '点电梯类型、状态的方框应打开详情页，地址带 lift 前缀');
   okT($('iconDetailTitle').textContent === '梯门已开'
-    && JSON.stringify(lfNames) === JSON.stringify({ '中文名称': '梯门已开', 'icon 库原始名称': 'elevator-door-open', '梯型': '直梯' }),
-    '电梯类型、状态详情页的名称清单应是 中文名称 / icon 库原始名称 / 梯型');
+    && JSON.stringify(lfNames) === JSON.stringify({ '中文名称': '梯门已开', 'icon 库原始名称': 'elevator-door-open', '梯型': '直梯', 'iconfont': 'kone-icon-elevator-door-open复制' }),
+    '电梯类型、状态详情页的名称清单应是 中文名称 / icon 库原始名称 / 梯型 / iconfont');
   okT($('iconDetailSceneTitle').textContent === '常用于表达 · 3 个'
     && JSON.stringify(enList()) === JSON.stringify(['梯门已开', '保持开门（电梯模式）', '梯门状态-已开门（实时数据）']),
     '「常用于表达」应列出它自己的中文名，以及另外两类里用到同一张图的方框（带类别）');
@@ -2574,6 +2576,66 @@ console.log('\n图标详情页');
   key('Escape');
   await tick();
   okT(dialog.hidden && doc.activeElement === walkBox, '关掉后焦点应还给点进来的那个方框');
+
+  // ---- iconfont / SVG Sprite ----
+  {
+    const F = w.eval('FINAL_ICONFONT');
+    const dir = new URL('../assets/iconfont/', import.meta.url);
+    const want = new Set(w.eval('FINAL_SECTIONS').flatMap((sec) => sec.items.map((it) => it.id)));
+    console.log(`  iconfont              ${F.length} 个 class（最终整理版本去重后 ${want.size} 张图）`);
+    okT(F.length === want.size && F.every((e) => want.has(e.id)), 'iconfont 应正好收最终整理版本的全部图标（按图标身份去重）');
+    okT(new Set(F.map((e) => e.cls)).size === F.length && F.every((e) => /^kone-icon-[a-z0-9]+(-[a-z0-9]+)*$/.test(e.cls)),
+      'class 名应唯一且只含小写字母、数字、短横线');
+    okT(F.find((e) => e.id === 'node:612:1683')?.cls === 'kone-icon-open-the-door'
+      && F.find((e) => e.id === 'node:8261:20794')?.cls === 'kone-icon-level-sensing'
+      && F.find((e) => e.id === 'node:612:962')?.cls === 'kone-icon-elevator-door-filded-b',
+      'class 名：原名转小写连字符；中文名与同名节点按 FINAL_ICONFONT_NAME_OVERRIDES');
+    okT(F.find((e) => e.cls === 'kone-icon-sales')?.meanings.includes('司机模式'), '每个 class 应带上它在最终整理版本里的中文含义（sales → 司机模式）');
+    // 产物是否过期：manifest 里记的 class / 码位 / 图形指纹必须与页面现算的一致
+    const files = ['kone-icons.woff2', 'kone-icons.otf', 'kone-icons.css', 'kone-icons-sprite.svg', 'demo.html', 'manifest.json', 'kone-icons.zip'];
+    const missing = files.filter((f) => !existsSync(new URL(f, dir)));
+    okT(!missing.length, `assets/iconfont/ 缺文件：${missing.join(', ')}（跑 cd tools && npm run iconfont）`);
+    if (!missing.length) {
+      const man = JSON.parse(readFileSync(new URL('manifest.json', dir), 'utf8'));
+      const hex = (c) => c.toString(16).toUpperCase();
+      const stale = F.filter((e, i) => {
+        const m = man.icons[i];
+        const hash = createHash('sha1').update(e.vb + '|' + e.svg).digest('hex').slice(0, 12);
+        return !m || m.cls !== e.cls || m.id !== e.id || m.code !== 'U+' + hex(e.code) || m.hash !== hash;
+      });
+      console.log(`  iconfont 产物          manifest ${man.icons.length} 条 · 过期 ${stale.length}`);
+      okT(man.icons.length === F.length && !stale.length,
+        `iconfont 产物过期（${stale.slice(0, 3).map((e) => e.cls).join(', ')}…）：图标改过，跑 cd tools && npm run iconfont`);
+      const css = readFileSync(new URL('kone-icons.css', dir), 'utf8');
+      const sprite = readFileSync(new URL('kone-icons-sprite.svg', dir), 'utf8');
+      okT(F.every((e) => css.includes(`.${e.cls}::before { content: "\\${hex(e.code)}"; }`)), 'CSS 里每个 class 都应指向它的码位');
+      okT(F.every((e) => sprite.includes(`<symbol id="${e.cls}" viewBox="${e.vb}">`)), 'Sprite 里每个 class 都应有一个 <symbol>');
+      const zip = unzipSync(new Uint8Array(readFileSync(new URL('kone-icons.zip', dir))));
+      const names = Object.keys(zip).sort();
+      console.log(`  zip 内容               ${names.join(' / ')}`);
+      okT(JSON.stringify(names) === JSON.stringify(['kone-icons/README.txt', 'kone-icons/demo.html', 'kone-icons/kone-icons-sprite.svg',
+        'kone-icons/kone-icons.css', 'kone-icons/kone-icons.otf', 'kone-icons/kone-icons.woff2']), 'zip 应包含字体两份、CSS、Sprite、演示页、README');
+      okT(Buffer.from(zip['kone-icons/kone-icons.css']).toString() === css, 'zip 里的 CSS 应与 assets/iconfont/ 里的一致');
+    }
+    // 页面入口：左侧导航下方的下载与说明
+    const dl = $('iconfontDownload'), demo = $('iconfontDemo');
+    okT(dl?.getAttribute('href') === 'assets/iconfont/kone-icons.zip' && dl.hasAttribute('download') && dl.closest('.final-nav'),
+      '左侧导航下方应有「下载 iconfont 包」，指向 assets/iconfont/kone-icons.zip');
+    okT(demo?.getAttribute('href') === 'assets/iconfont/demo.html' && demo.target === '_blank', '应有「使用说明」链接，新标签打开 demo.html');
+    // 详情页：iconfont 一行 + 复制
+    click(liveBox('通用', 'vibration-Horizonta'));
+    await tick();
+    const clsShown = $('iconDetailCls')?.textContent;
+    console.log(`  详情页 iconfont        「振动」→ ${clsShown}`);
+    okT(clsShown === 'kone-icon-vibration-horizonta', '详情页名称清单最后一行应是这个图标的 iconfont class');
+    const copied = [];
+    w.document.execCommand = (cmd) => { copied.push([cmd, [...w.document.querySelectorAll('textarea[readonly]')].pop()?.value]); return true; };
+    click($('iconDetailCopy'));
+    okT(copied.length === 1 && copied[0][0] === 'copy' && copied[0][1] === 'kone-icon-vibration-horizonta' && $('iconDetailCopy').textContent === '已复制',
+      '点「复制」应复制 class 名，并把按钮文字改成「已复制」');
+    key('Escape');
+    await tick();
+  }
 
   // 翻页范围跟当前搜索走
   const input = $('searchInput');

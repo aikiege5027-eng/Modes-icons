@@ -1,0 +1,692 @@
+{
+  "family": "kone-icons",
+  "count": 98,
+  "icons": [
+    {
+      "cls": "kone-icon-sales",
+      "code": "U+E001",
+      "id": "node:612:1709",
+      "name": "sales",
+      "hash": "8ea194eb06d0"
+    },
+    {
+      "cls": "kone-icon-auto",
+      "code": "U+E002",
+      "id": "node:10573:67420",
+      "name": "Auto",
+      "hash": "40208bdd243d"
+    },
+    {
+      "cls": "kone-icon-earthquake",
+      "code": "U+E003",
+      "id": "node:612:954",
+      "name": "earthquake",
+      "hash": "5f1dadbceb09"
+    },
+    {
+      "cls": "kone-icon-check-rectangle",
+      "code": "U+E004",
+      "id": "node:612:911",
+      "name": "check-rectangle",
+      "hash": "c786e5559e67"
+    },
+    {
+      "cls": "kone-icon-open-the-door",
+      "code": "U+E005",
+      "id": "node:612:1683",
+      "name": "Open the door",
+      "hash": "8a3171f1e509"
+    },
+    {
+      "cls": "kone-icon-pin",
+      "code": "U+E006",
+      "id": "node:612:1687",
+      "name": "pin",
+      "hash": "eb0c9fd44847"
+    },
+    {
+      "cls": "kone-icon-logout",
+      "code": "U+E007",
+      "id": "node:612:1023",
+      "name": "logout",
+      "hash": "70c8310c1eae"
+    },
+    {
+      "cls": "kone-icon-fire",
+      "code": "U+E008",
+      "id": "node:615:1771",
+      "name": "fire",
+      "hash": "009a5f65ba35"
+    },
+    {
+      "cls": "kone-icon-elevator-2",
+      "code": "U+E009",
+      "id": "node:612:957",
+      "name": "elevator-2",
+      "hash": "ed235b3ad2e4"
+    },
+    {
+      "cls": "kone-icon-minus-rectangle",
+      "code": "U+E00A",
+      "id": "node:612:1033",
+      "name": "minus-rectangle",
+      "hash": "77be9e33e6db"
+    },
+    {
+      "cls": "kone-icon-lock-on",
+      "code": "U+E00B",
+      "id": "node:612:1022",
+      "name": "lock-on",
+      "hash": "c2629f2517cb"
+    },
+    {
+      "cls": "kone-icon-battery-charge",
+      "code": "U+E00C",
+      "id": "node:2480:77",
+      "name": "battery-charge",
+      "hash": "4535de0889ce"
+    },
+    {
+      "cls": "kone-icon-zone-high",
+      "code": "U+E00D",
+      "id": "src:KONE China icon 规范 · 新画（未入库、未过评审）|zone-high",
+      "name": "zone-high",
+      "hash": "3c7634cbce65"
+    },
+    {
+      "cls": "kone-icon-zone-low",
+      "code": "U+E00E",
+      "id": "src:KONE China icon 规范 · 新画（未入库、未过评审）|zone-low",
+      "name": "zone-low",
+      "hash": "da0977eb7fa2"
+    },
+    {
+      "cls": "kone-icon-elevator-vip",
+      "code": "U+E00F",
+      "id": "node:612:973",
+      "name": "elevator-VIP",
+      "hash": "c8fa85fdb5a0"
+    },
+    {
+      "cls": "kone-icon-maintenance",
+      "code": "U+E010",
+      "id": "node:612:1026",
+      "name": "maintenance",
+      "hash": "cb7d1a67e596"
+    },
+    {
+      "cls": "kone-icon-warning-triangle",
+      "code": "U+E011",
+      "id": "node:615:1762",
+      "name": "warning-triangle",
+      "hash": "9fb38a687d75"
+    },
+    {
+      "cls": "kone-icon-user-avatar",
+      "code": "U+E012",
+      "id": "node:615:1736",
+      "name": "user-avatar",
+      "hash": "e331781a2e5c"
+    },
+    {
+      "cls": "kone-icon-clock",
+      "code": "U+E013",
+      "id": "node:612:928",
+      "name": "clock",
+      "hash": "a7e9d67594c5"
+    },
+    {
+      "cls": "kone-icon-elevator-cargo",
+      "code": "U+E014",
+      "id": "node:7300:92",
+      "name": "elevator-cargo",
+      "hash": "11fdab5aa10d"
+    },
+    {
+      "cls": "kone-icon-brush-clear",
+      "code": "U+E015",
+      "id": "node:4866:33",
+      "name": "brush-clear",
+      "hash": "3fcc6587d39e"
+    },
+    {
+      "cls": "kone-icon-question-rectangle",
+      "code": "U+E016",
+      "id": "node:612:1699",
+      "name": "question-rectangle",
+      "hash": "843346eb495c"
+    },
+    {
+      "cls": "kone-icon-elevator-door-open",
+      "code": "U+E017",
+      "id": "node:612:964",
+      "name": "elevator-door-open",
+      "hash": "5cf7402c8259"
+    },
+    {
+      "cls": "kone-icon-elevator-box",
+      "code": "U+E018",
+      "id": "node:7300:96",
+      "name": "elevator-box",
+      "hash": "d0877d45cfe8"
+    },
+    {
+      "cls": "kone-icon-safety-helmet",
+      "code": "U+E019",
+      "id": "node:615:1772",
+      "name": "Safety helmet",
+      "hash": "9832ed49738c"
+    },
+    {
+      "cls": "kone-icon-diagnosis",
+      "code": "U+E01A",
+      "id": "node:615:1766",
+      "name": "diagnosis",
+      "hash": "67e54f599c63"
+    },
+    {
+      "cls": "kone-icon-hospital-2",
+      "code": "U+E01B",
+      "id": "node:2480:50",
+      "name": "hospital-2",
+      "hash": "b6de00535192"
+    },
+    {
+      "cls": "kone-icon-medicine-box",
+      "code": "U+E01C",
+      "id": "node:615:1770",
+      "name": "Medicine box",
+      "hash": "c35c9f5a4875"
+    },
+    {
+      "cls": "kone-icon-battery-1",
+      "code": "U+E01D",
+      "id": "node:615:1776",
+      "name": "battery-1",
+      "hash": "834726d0756b"
+    },
+    {
+      "cls": "kone-icon-elevator-idle",
+      "code": "U+E01E",
+      "id": "node:612:976",
+      "name": "elevator-idle",
+      "hash": "5f2571145494"
+    },
+    {
+      "cls": "kone-icon-minus-circle",
+      "code": "U+E01F",
+      "id": "node:612:1031",
+      "name": "minus-circle",
+      "hash": "aed7f0dc636c"
+    },
+    {
+      "cls": "kone-icon-poweroff",
+      "code": "U+E020",
+      "id": "node:612:1692",
+      "name": "poweroff",
+      "hash": "5ee756178da5"
+    },
+    {
+      "cls": "kone-icon-light",
+      "code": "U+E021",
+      "id": "node:612:1002",
+      "name": "light",
+      "hash": "890bc54e5827"
+    },
+    {
+      "cls": "kone-icon-thermometer",
+      "code": "U+E022",
+      "id": "node:4324:3098",
+      "name": "thermometer",
+      "hash": "c37aeaff8c66"
+    },
+    {
+      "cls": "kone-icon-measure",
+      "code": "U+E023",
+      "id": "node:5156:28",
+      "name": "measure",
+      "hash": "2523ef5cc8a6"
+    },
+    {
+      "cls": "kone-icon-elevator-passenger",
+      "code": "U+E024",
+      "id": "node:612:974",
+      "name": "elevator-passenger",
+      "hash": "eedf67107d97"
+    },
+    {
+      "cls": "kone-icon-elevator-button",
+      "code": "U+E025",
+      "id": "node:615:1773",
+      "name": "elevator-button",
+      "hash": "7c2495281fc8"
+    },
+    {
+      "cls": "kone-icon-robot",
+      "code": "U+E026",
+      "id": "node:12007:216383",
+      "name": "robot",
+      "hash": "c4a79ee473ff"
+    },
+    {
+      "cls": "kone-icon-elevator-maintenance",
+      "code": "U+E027",
+      "id": "node:612:975",
+      "name": "elevator-maintenance",
+      "hash": "72385948e770"
+    },
+    {
+      "cls": "kone-icon-equipment",
+      "code": "U+E028",
+      "id": "node:612:972",
+      "name": "equipment",
+      "hash": "983599a6a460"
+    },
+    {
+      "cls": "kone-icon-setting",
+      "code": "U+E029",
+      "id": "node:612:1701",
+      "name": "setting",
+      "hash": "578398cc1411"
+    },
+    {
+      "cls": "kone-icon-setting-off",
+      "code": "U+E02A",
+      "id": "node:12007:216438",
+      "name": "setting-off",
+      "hash": "8281baa06187"
+    },
+    {
+      "cls": "kone-icon-usb",
+      "code": "U+E02B",
+      "id": "node:615:1738",
+      "name": "usb",
+      "hash": "ce522ea684de"
+    },
+    {
+      "cls": "kone-icon-user-maintenance",
+      "code": "U+E02C",
+      "id": "node:615:1751",
+      "name": "user-maintenance",
+      "hash": "e452697fe9ad"
+    },
+    {
+      "cls": "kone-icon-dashboard-1",
+      "code": "U+E02D",
+      "id": "node:612:930",
+      "name": "dashboard-1",
+      "hash": "e9ac1008f08e"
+    },
+    {
+      "cls": "kone-icon-wind",
+      "code": "U+E02E",
+      "id": "node:615:1768",
+      "name": "wind",
+      "hash": "03b2494ca537"
+    },
+    {
+      "cls": "kone-icon-card",
+      "code": "U+E02F",
+      "id": "node:605:512",
+      "name": "card",
+      "hash": "456fe5a388c9"
+    },
+    {
+      "cls": "kone-icon-alarm",
+      "code": "U+E030",
+      "id": "node:612:879",
+      "name": "alarm",
+      "hash": "5fcf47d9f3cd"
+    },
+    {
+      "cls": "kone-icon-user-talk",
+      "code": "U+E031",
+      "id": "node:615:1752",
+      "name": "user-talk",
+      "hash": "b145615981bd"
+    },
+    {
+      "cls": "kone-icon-stop",
+      "code": "U+E032",
+      "id": "node:1140:666",
+      "name": "stop",
+      "hash": "85fecde09fcd"
+    },
+    {
+      "cls": "kone-icon-shaft-learning",
+      "code": "U+E033",
+      "id": "src:TDesign Icons 0.4.7 · measurement-2|shaft-learning",
+      "name": "shaft-learning",
+      "hash": "c0291c156cb5"
+    },
+    {
+      "cls": "kone-icon-relevel",
+      "code": "U+E034",
+      "id": "node:12007:216476",
+      "name": "relevel",
+      "hash": "fe4c96fa90e2"
+    },
+    {
+      "cls": "kone-icon-relevel-slow",
+      "code": "U+E035",
+      "id": "node:12007:216496",
+      "name": "relevel-slow",
+      "hash": "6d754c16be1d"
+    },
+    {
+      "cls": "kone-icon-current",
+      "code": "U+E036",
+      "id": "node:612:931",
+      "name": "current",
+      "hash": "528e79c80699"
+    },
+    {
+      "cls": "kone-icon-keyboard",
+      "code": "U+E037",
+      "id": "node:612:1009",
+      "name": "keyboard",
+      "hash": "56dbd7b00e7c"
+    },
+    {
+      "cls": "kone-icon-forbid",
+      "code": "U+E038",
+      "id": "node:612:985",
+      "name": "forbid",
+      "hash": "026c70bc9a2a"
+    },
+    {
+      "cls": "kone-icon-forward",
+      "code": "U+E039",
+      "id": "node:612:987",
+      "name": "forward",
+      "hash": "fa25aedb1262"
+    },
+    {
+      "cls": "kone-icon-swap-1",
+      "code": "U+E03A",
+      "id": "node:615:1750",
+      "name": "swap-1",
+      "hash": "ae22157da5d3"
+    },
+    {
+      "cls": "kone-icon-windmill",
+      "code": "U+E03B",
+      "id": "node:615:1769",
+      "name": "windmill",
+      "hash": "9528b9fd40bc"
+    },
+    {
+      "cls": "kone-icon-play-1",
+      "code": "U+E03C",
+      "id": "node:612:1689",
+      "name": "play-1",
+      "hash": "78ec4fb580a4"
+    },
+    {
+      "cls": "kone-icon-toolbox",
+      "code": "U+E03D",
+      "id": "node:615:1743",
+      "name": "toolbox",
+      "hash": "7b463c3ae021"
+    },
+    {
+      "cls": "kone-icon-bias",
+      "code": "U+E03E",
+      "id": "node:612:889",
+      "name": "bias",
+      "hash": "33619e648ee1"
+    },
+    {
+      "cls": "kone-icon-escalator1",
+      "code": "U+E03F",
+      "id": "node:3996:5465",
+      "name": "escalator1",
+      "hash": "daf9efaddbff"
+    },
+    {
+      "cls": "kone-icon-escalator",
+      "code": "U+E040",
+      "id": "node:612:971",
+      "name": "escalator",
+      "hash": "a91db887ec2d"
+    },
+    {
+      "cls": "kone-icon-elevator",
+      "code": "U+E041",
+      "id": "node:612:956",
+      "name": "elevator",
+      "hash": "d7376bea352d"
+    },
+    {
+      "cls": "kone-icon-elevator-door",
+      "code": "U+E042",
+      "id": "node:612:958",
+      "name": "elevator-door",
+      "hash": "70b519952d0b"
+    },
+    {
+      "cls": "kone-icon-elevator-door-closed",
+      "code": "U+E043",
+      "id": "node:612:959",
+      "name": "elevator-door-closed",
+      "hash": "55789a4718d5"
+    },
+    {
+      "cls": "kone-icon-elevator-door-closing",
+      "code": "U+E044",
+      "id": "node:612:960",
+      "name": "elevator-door-closing",
+      "hash": "85724a7dd969"
+    },
+    {
+      "cls": "kone-icon-elevator-door-opening",
+      "code": "U+E045",
+      "id": "node:612:981",
+      "name": "elevator-door-opening",
+      "hash": "eb4e3c2a545b"
+    },
+    {
+      "cls": "kone-icon-elevator-door-closing2",
+      "code": "U+E046",
+      "id": "node:612:961",
+      "name": "elevator-door-closing2",
+      "hash": "c6ae630b6769"
+    },
+    {
+      "cls": "kone-icon-elevator-door-opening2",
+      "code": "U+E047",
+      "id": "node:612:980",
+      "name": "elevator-door-opening2",
+      "hash": "3ace222c5dde"
+    },
+    {
+      "cls": "kone-icon-elevator-group",
+      "code": "U+E048",
+      "id": "node:612:978",
+      "name": "elevator-group",
+      "hash": "531a2d482ee1"
+    },
+    {
+      "cls": "kone-icon-elevator-group-control",
+      "code": "U+E049",
+      "id": "node:612:977",
+      "name": "elevator-group-control",
+      "hash": "cadb41e7d964"
+    },
+    {
+      "cls": "kone-icon-walk",
+      "code": "U+E04A",
+      "id": "node:615:1757",
+      "name": "walk",
+      "hash": "803f569f3629"
+    },
+    {
+      "cls": "kone-icon-elevator-filled",
+      "code": "U+E04B",
+      "id": "node:612:979",
+      "name": "elevator-filled",
+      "hash": "8ebfbf987921"
+    },
+    {
+      "cls": "kone-icon-elevator-door-filded-b",
+      "code": "U+E04C",
+      "id": "node:612:962",
+      "name": "elevator-door-filded",
+      "hash": "6de779dcb428"
+    },
+    {
+      "cls": "kone-icon-elevator-door-filded2",
+      "code": "U+E04D",
+      "id": "node:3996:5509",
+      "name": "elevator-door-filded2",
+      "hash": "3cbfd5d20119"
+    },
+    {
+      "cls": "kone-icon-elevator-door-closing-filled1",
+      "code": "U+E04E",
+      "id": "node:3996:5530",
+      "name": "elevator-door-closing-filled1",
+      "hash": "77ba5298d3fe"
+    },
+    {
+      "cls": "kone-icon-elevator-door-closing-filled2",
+      "code": "U+E04F",
+      "id": "node:3996:5519",
+      "name": "elevator-door-closing-filled2",
+      "hash": "059cb1c50e4e"
+    },
+    {
+      "cls": "kone-icon-elevator-door-filded",
+      "code": "U+E050",
+      "id": "node:612:963",
+      "name": "elevator-door-filded",
+      "hash": "843278755239"
+    },
+    {
+      "cls": "kone-icon-elevator-door-opening-filded2",
+      "code": "U+E051",
+      "id": "node:3996:5517",
+      "name": "elevator-door-opening-filded2",
+      "hash": "61926fe6745d"
+    },
+    {
+      "cls": "kone-icon-elevator-exchange-filled",
+      "code": "U+E052",
+      "id": "node:2480:55",
+      "name": "elevator-exchange-filled",
+      "hash": "8f23c7c289de"
+    },
+    {
+      "cls": "kone-icon-escalator1-filled",
+      "code": "U+E053",
+      "id": "node:3996:5515",
+      "name": "escalator1-filled",
+      "hash": "7881883d80ca"
+    },
+    {
+      "cls": "kone-icon-escalator2-filled",
+      "code": "U+E054",
+      "id": "node:3996:5513",
+      "name": "escalator2-filled",
+      "hash": "07105751e558"
+    },
+    {
+      "cls": "kone-icon-arrow-up-right",
+      "code": "U+E055",
+      "id": "node:615:1779",
+      "name": "arrow-up-right",
+      "hash": "b4a7f23f0de1"
+    },
+    {
+      "cls": "kone-icon-arrow-down-right",
+      "code": "U+E056",
+      "id": "node:615:1780",
+      "name": "arrow-down-right",
+      "hash": "70a681c9a564"
+    },
+    {
+      "cls": "kone-icon-arrow-left",
+      "code": "U+E057",
+      "id": "node:612:882",
+      "name": "arrow-left",
+      "hash": "6cb73c1586fa"
+    },
+    {
+      "cls": "kone-icon-arrow-right",
+      "code": "U+E058",
+      "id": "node:612:883",
+      "name": "arrow-right",
+      "hash": "e0d275af8bee"
+    },
+    {
+      "cls": "kone-icon-dashboard-2",
+      "code": "U+E059",
+      "id": "node:612:929",
+      "name": "dashboard-2",
+      "hash": "d3a77291766c"
+    },
+    {
+      "cls": "kone-icon-dashboard-3",
+      "code": "U+E05A",
+      "id": "node:3996:5501",
+      "name": "dashboard-3",
+      "hash": "c2df3b83c84f"
+    },
+    {
+      "cls": "kone-icon-dashboard0",
+      "code": "U+E05B",
+      "id": "node:3996:5497",
+      "name": "dashboard0",
+      "hash": "5ec5e6275560"
+    },
+    {
+      "cls": "kone-icon-layers",
+      "code": "U+E05C",
+      "id": "node:612:1006",
+      "name": "layers",
+      "hash": "8cc42e929733"
+    },
+    {
+      "cls": "kone-icon-load-speed",
+      "code": "U+E05D",
+      "id": "node:5156:31",
+      "name": "load speed",
+      "hash": "2f0aadff9654"
+    },
+    {
+      "cls": "kone-icon-megaphone",
+      "code": "U+E05E",
+      "id": "node:612:1028",
+      "name": "megaphone",
+      "hash": "7fe595772c54"
+    },
+    {
+      "cls": "kone-icon-usergroup",
+      "code": "U+E05F",
+      "id": "node:615:1753",
+      "name": "usergroup",
+      "hash": "bba63d28679b"
+    },
+    {
+      "cls": "kone-icon-vibration-horizonta",
+      "code": "U+E060",
+      "id": "node:13145:33",
+      "name": "vibration-Horizonta",
+      "hash": "858f724cae90"
+    },
+    {
+      "cls": "kone-icon-water-droplets",
+      "code": "U+E061",
+      "id": "node:615:1767",
+      "name": "Water droplets",
+      "hash": "d43bd03e3c41"
+    },
+    {
+      "cls": "kone-icon-level-sensing",
+      "code": "U+E062",
+      "id": "node:8261:20794",
+      "name": "平层感应",
+      "hash": "7e3bcb6e7275"
+    }
+  ]
+}

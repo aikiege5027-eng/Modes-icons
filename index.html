@@ -1503,6 +1503,37 @@ td.cell-type { text-align: center; white-space: nowrap; }
 /* 搜索时某一类 0 命中：计数也调淡 */
 .final-nav__count--zero { color: var(--text-color-disabled); }
 
+/* 开发资源：导航下方，一条分隔线隔开。链接 Body 14 品牌色、说明 Foot 12 占位符色 */
+.final-res {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin-top: 16px;
+  padding: 16px 12px 0;
+  border-top: 1px solid var(--component-stroke);
+}
+.final-res__title {
+  margin-bottom: 4px;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--text-color-placeholder);
+}
+.final-res__link {
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--text-color-brand);
+  text-decoration: none;
+}
+.final-res__link:hover { color: var(--brand-color-hover); }
+.final-res__link:active { color: var(--brand-color-active); }
+.final-res__link:focus-visible { outline: 2px solid var(--brand-color); outline-offset: 2px; border-radius: var(--radius-small); }
+.final-res__desc {
+  margin: -4px 0 8px;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--text-color-placeholder);
+}
 /* 窄屏：导航挪到主体上方、三项横排，不再 sticky（横排时占的高度很小，吸住反而挡内容） */
 @media (max-width: 900px) {
   .final-layout { grid-template-columns: minmax(0, 1fr); row-gap: 16px; }
@@ -2016,6 +2047,33 @@ button.final-item__box:focus-visible {
   color: var(--text-color-primary);
   overflow-wrap: anywhere;
 }
+/* iconfont 一行：class 名（等宽）+ 复制按钮。按钮是 Search 组件 item/searchBox 那套 24px 文字按钮 */
+.icon-detail__cls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.icon-detail__cls code {
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.icon-detail__copy {
+  flex: none;
+  height: var(--comp-size-xs);
+  padding: 0 4px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--text-color-brand);
+  background: none;
+  border: none;
+  border-radius: var(--radius-small);
+  cursor: pointer;
+}
+.icon-detail__copy:hover { background: var(--bg-color-secondarycontainer); }
+.icon-detail__copy:focus-visible { outline: 2px solid var(--brand-color); outline-offset: 1px; }
 
 .icon-detail__card-title {
   margin: 0;
@@ -3129,6 +3187,14 @@ tbody tr:hover .note-btn--add,
   <div class="final-layout">
     <nav class="final-nav" aria-label="最终整理版本分类">
       <ul class="final-nav__list" id="finalNav"></ul>
+      <!-- 开发资源：最终整理版本全部图标的 iconfont + SVG Sprite（tools/build-iconfont.mjs 生成）。
+           跟着导航吸在左边，滚到哪一类都点得到。 -->
+      <div class="final-res" aria-labelledby="finalResTitle">
+        <div class="final-res__title" id="finalResTitle">开发资源</div>
+        <a class="final-res__link" id="iconfontDownload" href="assets/iconfont/kone-icons.zip" download>下载 iconfont 包</a>
+        <div class="final-res__desc">字体 + CSS + SVG Sprite（zip）</div>
+        <a class="final-res__link" id="iconfontDemo" href="assets/iconfont/demo.html" target="_blank" rel="noopener">使用说明与 class 名</a>
+      </div>
     </nav>
     <div class="final-sections" id="finalSections"></div>
     <!-- 页面最底部一行：进入「历史整理汇总」（原来的前三个页签：各平台对照与标准版选型） -->
@@ -8674,6 +8740,52 @@ function buildFinalSections() {
 const FINAL_SECTIONS = buildFinalSections();
 const FINAL_TOTAL = FINAL_SECTIONS.reduce(function (n, sec) { return n + sec.items.length; }, 0);
 
+/* ============================================================
+   iconfont / SVG Sprite（只收最终整理版本的图标）
+   一张图一个 class：按图标身份去重（同一张图在多类、多格里出现只算一个），共 98 个。
+   class 名 = icon 库原始名称转小写、空格换短横线（Open the door → kone-icon-open-the-door）。
+   用原始名而不是中文语义：一张图常对应多个含义（dashboard-1 既是「降速」又是「速度」），
+   按含义起名会一图多名、或者名字对不上其中一个含义；原始名稳定、也与 Figma 对得上。
+   含义的歧义（司机模式 → kone-icon-sales）靠演示页的「全部中文含义」与详情页的 class 名一行解决。
+   两处手动指定（FINAL_ICONFONT_NAME_OVERRIDES）：
+     平层感应        原名是中文，没法做 class 名 → level-sensing
+     612:962         与 612:963 同名 elevator-door-filded（图形不同），不带箭头的这个加 -b
+   字体与 Sprite 由 tools/build-iconfont.mjs 生成到 assets/iconfont/，这里的 FINAL_ICONFONT
+   是它的数据来源（脚本在 jsdom 里读这一份），页面与构建用同一份，不会各算各的。
+   ⚠ 图标改了要重跑 `cd tools && npm run iconfont`；没重跑的话 tools/check-page.mjs 会报
+   「iconfont 产物过期」（它按 assets/iconfont/manifest.json 比对）。
+   ============================================================ */
+const FINAL_ICONFONT_PREFIX = 'kone-icon-';
+const FINAL_ICONFONT_NAME_OVERRIDES = {
+  'node:8261:20794': 'level-sensing',
+  'node:612:962': 'elevator-door-filded-b',
+};
+const FINAL_ICONFONT = (function () {
+  const byId = new Map();
+  const list = [];
+  FINAL_SECTIONS.forEach(function (sec) {
+    sec.items.forEach(function (it) {
+      let e = byId.get(it.id);
+      if (!e) {
+        const slug = FINAL_ICONFONT_NAME_OVERRIDES[it.id]
+          || it.name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        e = { id: it.id, name: it.name, cls: FINAL_ICONFONT_PREFIX + slug, vb: it.vb, svg: it.svg,
+          src: it.src, node: it.node || '', sections: [], meanings: [] };
+        byId.set(it.id, e);
+        list.push(e);
+      }
+      if (e.sections.indexOf(sec.title) === -1) e.sections.push(sec.title);
+      // 这一格在最终整理版本里的中文含义：方框上的名字 + 合并进来的各行
+      const names = [it.zh].concat(sec.key === 'modes' ? it.members.map(function (m) { return m.zh; }) : (it.zhNames || []));
+      names.forEach(function (n) { if (n && e.meanings.indexOf(n) === -1) e.meanings.push(n); });
+    });
+  });
+  // 码位：私有区 U+E001 起按上面的顺序排。用的人写 class 名，不直接写码位，所以顺序变了不影响使用
+  list.forEach(function (e, i) { e.code = 0xE001 + i; });
+  return list;
+})();
+const FINAL_ICONFONT_BY_ID = new Map(FINAL_ICONFONT.map(function (e) { return [e.id, e]; }));
+
 /* tooltip：全名（方框下的名字会被省略号截断）+ 来源 + 在对应页签里用在哪几行
    + 跨类重复。行名最多列 3 个，多的折成「等 N 行」—— maintenance 这种挂了好几行的，
    全列出来 tooltip 会拉得比屏幕还长。 */
@@ -9428,6 +9540,14 @@ function renderIconDetail(it) {
   if (it.secKey === 'live') renderLiveDetailPanel(it);
   else if (it.secKey === 'lift') renderLiftDetailPanel(it);
   else renderModeDetailPanel(it);
+  /* 三类共用的最后一行：这个图标在 iconfont 里的 class 名 + 复制。
+     class 按图标身份查（FINAL_ICONFONT_BY_ID），同一张图在哪一类打开都是同一个 class */
+  const font = FINAL_ICONFONT_BY_ID.get(it.id);
+  if (font) {
+    document.getElementById('iconDetailNames').insertAdjacentHTML('beforeend',
+      '<dt>iconfont</dt><dd class="icon-detail__cls"><code id="iconDetailCls">' + esc(font.cls) + '</code>'
+      + '<button type="button" class="icon-detail__copy" id="iconDetailCopy" aria-label="复制 class 名 ' + esc(font.cls) + '">复制</button></dd>');
+  }
   /* 常见名称 / 常用于表达 这张卡片是用来罗列多个名称的：只有一项（或只有「-」占位）时，
      那一项就是上面名称清单里已经写着的，按要求整张不显示 */
   document.getElementById('iconDetailSceneCard').hidden =
@@ -9649,6 +9769,34 @@ function syncDetailWithHash() {
   }
 }
 window.addEventListener('hashchange', syncDetailWithHash);
+
+/* 详情页「复制 class 名」。剪贴板 API 只在安全上下文（https / localhost）可用，
+   file:// 打开时退回 execCommand('copy')。按钮文字临时变「已复制」，读屏通过 aria-live 读出。 */
+document.getElementById('iconDetail').addEventListener('click', function (e) {
+  const btn = e.target.closest ? e.target.closest('#iconDetailCopy') : null;
+  if (!btn) return;
+  const text = document.getElementById('iconDetailCls').textContent;
+  const done = function () {
+    btn.textContent = '已复制';
+    btn.setAttribute('aria-live', 'polite');
+    clearTimeout(btn._t);
+    btn._t = setTimeout(function () { btn.textContent = '复制'; }, 1500);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(done, done);
+  } else {
+    const t = document.createElement('textarea');
+    t.value = text;
+    t.setAttribute('readonly', '');
+    t.style.position = 'fixed';
+    t.style.opacity = '0';
+    document.body.appendChild(t);
+    t.select();
+    try { document.execCommand('copy'); } catch (err) { /* 复制不了也给反馈，用户可手动选中 */ }
+    t.remove();
+    done();
+  }
+});
 
 document.getElementById('finalSections').addEventListener('click', function (e) {
   const box = e.target.closest ? e.target.closest('button.final-item__box[data-final-id]') : null;

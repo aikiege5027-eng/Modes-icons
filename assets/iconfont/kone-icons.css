@@ -1,0 +1,124 @@
+/* KONE China · 电梯相关图标 iconfont（最终整理版本，98 个）
+   由 tools/build-iconfont.mjs 生成，请勿手改。
+   用法：<i class="kone-icon kone-icon-sales" aria-hidden="true"></i>
+   大小用 font-size（16 网格，16 / 32 / 48px 这类整数倍最清楚），颜色用 color。 */
+@font-face {
+  font-family: "kone-icons";
+  src: url("./kone-icons.woff2") format("woff2"),
+       url("./kone-icons.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+.kone-icon {
+  display: inline-block;
+  font-family: "kone-icons" !important;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-transform: none;
+  vertical-align: -0.125em;
+  speak: never;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.kone-icon-sales::before { content: "\E001"; }
+.kone-icon-auto::before { content: "\E002"; }
+.kone-icon-earthquake::before { content: "\E003"; }
+.kone-icon-check-rectangle::before { content: "\E004"; }
+.kone-icon-open-the-door::before { content: "\E005"; }
+.kone-icon-pin::before { content: "\E006"; }
+.kone-icon-logout::before { content: "\E007"; }
+.kone-icon-fire::before { content: "\E008"; }
+.kone-icon-elevator-2::before { content: "\E009"; }
+.kone-icon-minus-rectangle::before { content: "\E00A"; }
+.kone-icon-lock-on::before { content: "\E00B"; }
+.kone-icon-battery-charge::before { content: "\E00C"; }
+.kone-icon-zone-high::before { content: "\E00D"; }
+.kone-icon-zone-low::before { content: "\E00E"; }
+.kone-icon-elevator-vip::before { content: "\E00F"; }
+.kone-icon-maintenance::before { content: "\E010"; }
+.kone-icon-warning-triangle::before { content: "\E011"; }
+.kone-icon-user-avatar::before { content: "\E012"; }
+.kone-icon-clock::before { content: "\E013"; }
+.kone-icon-elevator-cargo::before { content: "\E014"; }
+.kone-icon-brush-clear::before { content: "\E015"; }
+.kone-icon-question-rectangle::before { content: "\E016"; }
+.kone-icon-elevator-door-open::before { content: "\E017"; }
+.kone-icon-elevator-box::before { content: "\E018"; }
+.kone-icon-safety-helmet::before { content: "\E019"; }
+.kone-icon-diagnosis::before { content: "\E01A"; }
+.kone-icon-hospital-2::before { content: "\E01B"; }
+.kone-icon-medicine-box::before { content: "\E01C"; }
+.kone-icon-battery-1::before { content: "\E01D"; }
+.kone-icon-elevator-idle::before { content: "\E01E"; }
+.kone-icon-minus-circle::before { content: "\E01F"; }
+.kone-icon-poweroff::before { content: "\E020"; }
+.kone-icon-light::before { content: "\E021"; }
+.kone-icon-thermometer::before { content: "\E022"; }
+.kone-icon-measure::before { content: "\E023"; }
+.kone-icon-elevator-passenger::before { content: "\E024"; }
+.kone-icon-elevator-button::before { content: "\E025"; }
+.kone-icon-robot::before { content: "\E026"; }
+.kone-icon-elevator-maintenance::before { content: "\E027"; }
+.kone-icon-equipment::before { content: "\E028"; }
+.kone-icon-setting::before { content: "\E029"; }
+.kone-icon-setting-off::before { content: "\E02A"; }
+.kone-icon-usb::before { content: "\E02B"; }
+.kone-icon-user-maintenance::before { content: "\E02C"; }
+.kone-icon-dashboard-1::before { content: "\E02D"; }
+.kone-icon-wind::before { content: "\E02E"; }
+.kone-icon-card::before { content: "\E02F"; }
+.kone-icon-alarm::before { content: "\E030"; }
+.kone-icon-user-talk::before { content: "\E031"; }
+.kone-icon-stop::before { content: "\E032"; }
+.kone-icon-shaft-learning::before { content: "\E033"; }
+.kone-icon-relevel::before { content: "\E034"; }
+.kone-icon-relevel-slow::before { content: "\E035"; }
+.kone-icon-current::before { content: "\E036"; }
+.kone-icon-keyboard::before { content: "\E037"; }
+.kone-icon-forbid::before { content: "\E038"; }
+.kone-icon-forward::before { content: "\E039"; }
+.kone-icon-swap-1::before { content: "\E03A"; }
+.kone-icon-windmill::before { content: "\E03B"; }
+.kone-icon-play-1::before { content: "\E03C"; }
+.kone-icon-toolbox::before { content: "\E03D"; }
+.kone-icon-bias::before { content: "\E03E"; }
+.kone-icon-escalator1::before { content: "\E03F"; }
+.kone-icon-escalator::before { content: "\E040"; }
+.kone-icon-elevator::before { content: "\E041"; }
+.kone-icon-elevator-door::before { content: "\E042"; }
+.kone-icon-elevator-door-closed::before { content: "\E043"; }
+.kone-icon-elevator-door-closing::before { content: "\E044"; }
+.kone-icon-elevator-door-opening::before { content: "\E045"; }
+.kone-icon-elevator-door-closing2::before { content: "\E046"; }
+.kone-icon-elevator-door-opening2::before { content: "\E047"; }
+.kone-icon-elevator-group::before { content: "\E048"; }
+.kone-icon-elevator-group-control::before { content: "\E049"; }
+.kone-icon-walk::before { content: "\E04A"; }
+.kone-icon-elevator-filled::before { content: "\E04B"; }
+.kone-icon-elevator-door-filded-b::before { content: "\E04C"; }
+.kone-icon-elevator-door-filded2::before { content: "\E04D"; }
+.kone-icon-elevator-door-closing-filled1::before { content: "\E04E"; }
+.kone-icon-elevator-door-closing-filled2::before { content: "\E04F"; }
+.kone-icon-elevator-door-filded::before { content: "\E050"; }
+.kone-icon-elevator-door-opening-filded2::before { content: "\E051"; }
+.kone-icon-elevator-exchange-filled::before { content: "\E052"; }
+.kone-icon-escalator1-filled::before { content: "\E053"; }
+.kone-icon-escalator2-filled::before { content: "\E054"; }
+.kone-icon-arrow-up-right::before { content: "\E055"; }
+.kone-icon-arrow-down-right::before { content: "\E056"; }
+.kone-icon-arrow-left::before { content: "\E057"; }
+.kone-icon-arrow-right::before { content: "\E058"; }
+.kone-icon-dashboard-2::before { content: "\E059"; }
+.kone-icon-dashboard-3::before { content: "\E05A"; }
+.kone-icon-dashboard0::before { content: "\E05B"; }
+.kone-icon-layers::before { content: "\E05C"; }
+.kone-icon-load-speed::before { content: "\E05D"; }
+.kone-icon-megaphone::before { content: "\E05E"; }
+.kone-icon-usergroup::before { content: "\E05F"; }
+.kone-icon-vibration-horizonta::before { content: "\E060"; }
+.kone-icon-water-droplets::before { content: "\E061"; }
+.kone-icon-level-sensing::before { content: "\E062"; }
